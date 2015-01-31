@@ -29,8 +29,12 @@ class Container
         return $this;
     }
 
-    public function get($name)
+    public function getBundles($name = null)
     {
+        if (null === $name) {
+            return $this->bundles;
+        }
+
         if (!isset($this->bundles[$name])) {
             throw new ContainerException(sprintf("%s' is not register into the container."));
         }
