@@ -65,9 +65,8 @@ class Ioc
 
         $parameters = $this->getParameters($method, $arguments);
 
-        print_r($parameters);
-    }
+        $parameters = $this->getParameters($method, $arguments);
 
-    public static function __callStatic($method, $args)
-    {}
+        return call_user_func_array([$this->bundle, $method], $parameters);
+    }
 }
