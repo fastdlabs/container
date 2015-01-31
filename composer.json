@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Container\\": "Container/src"
+            "Dobee\\Container\\": "src/Container"
         }
     }
 }

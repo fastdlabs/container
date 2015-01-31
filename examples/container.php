@@ -13,7 +13,7 @@
 include __DIR__ . '/../vendor/autoload.php';
 include __DIR__ . '/Demo.php';
 
-$container = new \Container\Container();
+$container = new Dobee\Container\Container();
 
 $container->addBundles('demo', new Demo());
 

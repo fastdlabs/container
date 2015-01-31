@@ -10,9 +10,9 @@
  * Blog: http://segmentfault.com/blog/janhuang
  */
 
-namespace Container;
+namespace Dobee\Container;
 
-use Container\Dependency\Ioc;
+use Dobee\Container\Dependency\Ioc;
 
 class Container
 {

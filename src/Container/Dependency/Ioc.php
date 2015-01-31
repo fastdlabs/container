@@ -10,7 +10,7 @@
  * Blog: http://segmentfault.com/blog/janhuang
  */
 
-namespace Container\Dependency;
+namespace Dobee\Container\Dependency;
 
 class Ioc 
 {
