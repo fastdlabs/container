@@ -17,9 +17,10 @@ $container = new Dobee\Container\Container();
 
 $container->addBundles('demo', new Demo());
 
-$demo = $container->get('demo');
+$demo = $container->getBundles('demo');
 
-class Test
-{}
+$demo->handle('test', new DemoEventHandler());
+
+echo '<pre>';
 
 $demo->test('ab', 123, 'abcdefg');

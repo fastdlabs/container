@@ -29,6 +29,11 @@ class Container
         return $this;
     }
 
+    /**
+     * @param null $name
+     * @return Ioc
+     * @throws ContainerException
+     */
     public function getBundles($name = null)
     {
         if (null === $name) {

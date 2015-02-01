@@ -9,7 +9,25 @@
  * sf: http://segmentfault.com/u/janhuang
  * Blog: http://segmentfault.com/blog/janhuang
  */
-class Demo 
+class Test{}
+
+class DemoEventHandler extends \Dobee\Container\Handler\HandlerAbstract
+{
+    public function after()
+    {
+
+        echo 'after<br />';
+    }
+
+    public function before()
+    {
+        echo 'before<br />';
+        print_r($this->getParameters());
+        die;
+    }
+}
+
+class Demo
 {
     public function test(Test $test, $b, $a, $c)
     {

@@ -12,11 +12,19 @@
 
 namespace Dobee\Container\Dependency;
 
-class Ioc 
+use Dobee\Container\Handler\HandlerInterface;
+use Dobee\Container\Handler\HandlerAbstract;
+
+class Ioc implements DependencyInterface
 {
     private $bundle;
 
     private $reflection;
+
+    /**
+     * @var HandlerAbstract|HandlerInterface[]
+     */
+    private $event_listeners;
 
     public function __construct($bundle)
     {
@@ -57,6 +65,13 @@ class Ioc
         return $arguments;
     }
 
+    public function handle($action, HandlerInterface $handlerInterface)
+    {
+        $this->event_listeners[$action] = $handlerInterface;
+
+        return $this;
+    }
+
     public function __call($method, $arguments)
     {
         if (!method_exists($this->bundle, $method)) {
@@ -65,8 +80,16 @@ class Ioc
 
         $parameters = $this->getParameters($method, $arguments);
 
-        $parameters = $this->getParameters($method, $arguments);
+        $listener = $this->event_listeners[$method];
 
-        return call_user_func_array([$this->bundle, $method], $parameters);
+        $listener->setParameters($parameters);
+
+        $listener->before();
+
+        $result = call_user_func_array([$this->bundle, $method], $parameters);
+
+        $listener->after();
+
+        return $result;
     }
 }
