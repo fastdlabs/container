@@ -80,15 +80,19 @@ class Ioc implements DependencyInterface
 
         $parameters = $this->getParameters($method, $arguments);
 
-        $listener = $this->event_listeners[$method];
+        if (isset($this->event_listeners[$method])) {
+            $listener = $this->event_listeners[$method];
 
-        $listener->setParameters($parameters);
+            $listener->setParameters($parameters);
 
-        $listener->before();
+            $listener->before();
+        }
 
         $result = call_user_func_array([$this->bundle, $method], $parameters);
-
-        $listener->after();
+        
+        if (isset($this->event_listeners[$method])) {
+            $listener->after();
+        }
 
         return $result;
     }
