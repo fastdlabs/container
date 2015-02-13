@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/1/31
- * Time: 下午6:12
+ * Date: 15/2/2
+ * Time: 上午12:45
  * Github: https://www.github.com/janhuang 
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -13,9 +13,7 @@
 
 namespace Dobee\Container\Listener;
 
-use Dobee\Container\Handler\HandlerInterface;
-
-interface EventInterface
+class EventAbstract 
 {
-    public function handle($event = null, HandlerInterface $handlerInterface = null);
+
 }

@@ -15,7 +15,6 @@ class DemoEventHandler extends \Dobee\Container\Handler\HandlerAbstract
 {
     public function after()
     {
-
         echo 'after<br />';
     }
 
@@ -31,6 +30,6 @@ class Demo
 {
     public function test(Test $test, $b, $a, $c)
     {
-        print_r($test);
+        print_r(func_get_args());
     }
 }

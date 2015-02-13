@@ -19,8 +19,6 @@ $container->addBundles('demo', new Demo());
 
 $demo = $container->getBundles('demo');
 
-$demo->handle('test', new DemoEventHandler());
-
 echo '<pre>';
 
 $demo->test('ab', 123, 'abcdefg');

@@ -47,7 +47,7 @@ class Ioc implements DependencyInterface
 
         $arguments = array();
 
-        foreach ($parameters as $index => $param) {
+        foreach ($parameters as $param) {
             if (is_object($param->getClass())) {
                 if (!class_exists(($class = $param->getClass()->getName()))) {
                     throw new \Exception(sprintf("Class '%s' is undefined.", $class));
@@ -59,7 +59,7 @@ class Ioc implements DependencyInterface
                 $i++;
             }
 
-            $arguments[$index] = $arg;
+            $arguments[$param->getName()] = $arg;
         }
 
         return $arguments;
@@ -80,19 +80,19 @@ class Ioc implements DependencyInterface
 
         $parameters = $this->getParameters($method, $arguments);
 
-        if (isset($this->event_listeners[$method])) {
-            $listener = $this->event_listeners[$method];
-
-            $listener->setParameters($parameters);
-
-            $listener->before();
-        }
+//        if (isset($this->event_listeners[$method])) {
+//            $listener = $this->event_listeners[$method];
+//
+//            $listener->setParameters($parameters);
+//
+//            $listener->before();
+//        }
 
         $result = call_user_func_array([$this->bundle, $method], $parameters);
-        
-        if (isset($this->event_listeners[$method])) {
-            $listener->after();
-        }
+
+//        if (isset($this->event_listeners[$method])) {
+//            $listener->after();
+//        }
 
         return $result;
     }
