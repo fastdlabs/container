@@ -27,6 +27,15 @@ class Objective extends \ReflectionClass
      */
     private $instance;
 
+    private $constructor;
+
+    public function setConstructor($constructor)
+    {
+        $this->constructor = $constructor;
+
+        return $this;
+    }
+
     /**
      * @param mixed $class
      */
@@ -49,9 +58,11 @@ class Objective extends \ReflectionClass
             if (null !== ($constructor = $this->getConstructor())) {
                 $parameters = $this->getParameters($constructor, $parameters);
             }
-        }
 
-        $this->instance = $this->newInstanceArgs($parameters);
+            $this->instance = $this->newInstanceArgs($parameters);
+        } else {
+            $this->instance = call_user_func_array($this->getName() . '::' . $this->constructor, $this->getParameters($this->getMethod($this->constructor), $parameters));
+        }
 
         return $this->instance;
     }

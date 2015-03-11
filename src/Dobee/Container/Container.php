@@ -31,10 +31,12 @@ class Container implements ContainerInterface
     public function __construct(array $objectives = array())
     {
         foreach ($objectives as $alias => $class) {
-            if (is_numeric($alias)) {
-                $alias = $this->getAlias($class);
+            $constructor = '';
+            if (false !== ($pos = strpos($class, ':'))) {
+                list($class, $constructor) = explode(':', $class);
             }
-            $this->set($alias, $this->createObjective($class));
+
+            $this->set($this->getAlias($class), $this->createObjective($class, $constructor));
         }
     }
 
@@ -69,7 +71,7 @@ class Container implements ContainerInterface
     public function getAlias($name)
     {
         if (false !== ($pos = strrpos($name, '\\'))) {
-            $alias = substr($name, $pos);
+            $alias = substr($name, $pos+1);
         } else {
             $alias = $name;
         }
@@ -92,17 +94,21 @@ class Container implements ContainerInterface
     /**
      * @return Objective
      */
-    public function createObjective($name)
+    public function createObjective($class, $constructor = null)
     {
-        if (!class_exists($name)) {
-            throw new \InvalidArgumentException(sprintf('Container "%s" is undefined.', $name));
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException(sprintf('Container "%s" is undefined.', $class));
         }
 
-        $objective = Objective::createObjective($name);
+        $objective = Objective::createObjective($class);
 
         $objective->setContainer($this);
 
-        $objective->setAlias($this->getAlias($name));
+        $objective->setAlias($this->getAlias($class));
+
+        if (!empty($constructor)) {
+            $objective->setConstructor($constructor);
+        }
 
         return $objective;
     }
