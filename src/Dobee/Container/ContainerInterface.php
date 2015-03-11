@@ -13,7 +13,29 @@
 
 namespace Dobee\Container;
 
+/**
+ * Interface ContainerInterface
+ *
+ * @package Dobee\Container
+ */
 interface ContainerInterface
 {
+    /**
+     * @param $name
+     * @return Objective
+     */
+    public function get($name);
 
+    /**
+     * @param           $name
+     * @param Objective $objective
+     * @return $this
+     */
+    public function set($name, Objective $objective);
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public function getInstance($name);
 }
