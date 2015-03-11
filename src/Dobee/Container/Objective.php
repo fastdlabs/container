@@ -49,6 +49,10 @@ class Objective extends \ReflectionClass
     public function __construct($class)
     {
         parent::__construct($class);
+
+        if (is_object($class)) {
+            $this->instance = $class;
+        }
     }
 
     /**
