@@ -27,8 +27,15 @@ class Objective extends \ReflectionClass
      */
     private $instance;
 
+    /**
+     * @var string
+     */
     private $constructor;
 
+    /**
+     * @param $constructor
+     * @return $this
+     */
     public function setConstructor($constructor)
     {
         $this->constructor = $constructor;
@@ -82,7 +89,7 @@ class Objective extends \ReflectionClass
 
         foreach ($method->getParameters() as $index => $parameter) {
             if (($class = $parameter->getClass()) instanceof \ReflectionClass) {
-                $args[$index] = $this->container->getInstance($this->container->getAlias($class->getName()));
+                $args[$index] = $this->container->getInstance($class->getName());
             }
         }
 

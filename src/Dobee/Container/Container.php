@@ -47,11 +47,13 @@ class Container implements ContainerInterface
      */
     public function get($name)
     {
-        if (!isset($this->container[$name])) {
-            $this->set($this->getAlias($name), $this->createObjective($name));
+        $alias = $this->getAlias($name);
+
+        if (!isset($this->container[$alias])) {
+            $this->set($alias, $this->createObjective($name));
         }
         
-        return $this->container[$name];
+        return $this->container[$alias];
     }
 
     /**
@@ -97,7 +99,7 @@ class Container implements ContainerInterface
     public function createObjective($class, $constructor = null)
     {
         if (!class_exists($class)) {
-            throw new \InvalidArgumentException(sprintf('Container "%s" is undefined.', $class));
+            throw new \InvalidArgumentException(sprintf('Container objective "%s" is undefined.', $class));
         }
 
         $objective = Objective::createObjective($class);
