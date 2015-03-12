@@ -66,11 +66,15 @@ class Objective extends \ReflectionClass
         }
 
         if (empty($this->constructor)) {
-            if (null !== ($constructor = $this->getConstructor())) {
-                $parameters = $this->getParameters($constructor, $parameters);
-            }
+            if (null === $this->getConstructor()) {
+                $this->instance = $this->newInstance();
+            } else {
+                if (null !== ($constructor = $this->getConstructor())) {
+                    $parameters = $this->getParameters($constructor, $parameters);
+                }
 
-            $this->instance = $this->newInstanceArgs($parameters);
+                $this->instance = $this->newInstanceArgs(array($parameters));
+            }
         } else {
             $this->instance = call_user_func_array($this->getName() . '::' . $this->constructor, $this->getParameters($this->getMethod($this->constructor), $parameters));
         }
