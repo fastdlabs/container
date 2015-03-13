@@ -17,9 +17,11 @@ class A
 {
     private $b;
 
-    public function __construct(B $b)
+    public function __construct(B $b, $var)
     {
         $this->b = $b;
+
+        echo $var;
     }
 
     public function getB()
@@ -32,7 +34,7 @@ class B{}
 
 class C{}
 
-$container = new \Dobee\Container\Container();
+$container = new \Dobee\Container\Container(null, array('var' => 1));
 
 echo '<pre>';
 $a = $container->get('A');

@@ -26,18 +26,28 @@ class Container implements ContainerInterface
     private $container = array();
 
     /**
-     * @param array $objectives
+     * @var array
      */
-    public function __construct(array $objectives = array())
-    {
-        foreach ($objectives as $alias => $class) {
-            $constructor = '';
-            if (false !== ($pos = strpos($class, ':'))) {
-                list($class, $constructor) = explode(':', $class);
-            }
+    private $options = array();
 
-            $this->set($this->getAlias($class), $this->createObjective($class, $constructor));
+    /**
+     * @param array $objectives
+     * @param array $options
+     */
+    public function __construct($objectives = array(), array $options = array())
+    {
+        if (!empty($objectives)) {
+            foreach ($objectives as $alias => $class) {
+                $constructor = '';
+                if (false !== ($pos = strpos($class, ':'))) {
+                    list($class, $constructor) = explode(':', $class);
+                }
+
+                $this->set($this->getAlias($class), $this->createObjective($class, $constructor));
+            }
         }
+
+        $this->options = $options;
     }
 
     /**
@@ -50,7 +60,11 @@ class Container implements ContainerInterface
         $alias = $this->getAlias($name);
 
         if (!isset($this->container[$alias])) {
-            $this->set($alias, $this->createObjective($name));
+            $constructor = null;
+            if (false !== ($pos = strpos($name, ':'))) {
+                $constructor = substr($name, $pos + 1);
+            }
+            $this->set($alias, $this->createObjective($name, $constructor, $this->options));
         }
         
         return $this->container[$alias];
@@ -63,7 +77,7 @@ class Container implements ContainerInterface
      */
     public function getInstance($name, array $parameters = array())
     {
-        return $this->get($name)->getInstance($parameters);
+        return $this->get($name)->getInstance(array_merge($this->options, $parameters));
     }
 
     /**
@@ -96,13 +110,13 @@ class Container implements ContainerInterface
     /**
      * @return Objective
      */
-    public function createObjective($class, $constructor = null)
+    public function createObjective($class, $constructor = null, array $parameters = array())
     {
         if (!class_exists($class)) {
             throw new \InvalidArgumentException(sprintf('Container objective "%s" is undefined.', $class));
         }
 
-        $objective = Objective::createObjective($class);
+        $objective = Objective::createObjective($class, $parameters);
 
         $objective->setContainer($this);
 

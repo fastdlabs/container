@@ -33,6 +33,11 @@ class Objective extends \ReflectionClass
     private $constructor;
 
     /**
+     * @var array
+     */
+    private $parameters = array();
+
+    /**
      * @param $constructor
      * @return $this
      */
@@ -46,13 +51,15 @@ class Objective extends \ReflectionClass
     /**
      * @param mixed $class
      */
-    public function __construct($class)
+    public function __construct($class, array $parameters = array())
     {
         parent::__construct($class);
 
         if (is_object($class)) {
             $this->instance = $class;
         }
+
+        $this->parameters = $parameters;
     }
 
     /**
@@ -73,7 +80,7 @@ class Objective extends \ReflectionClass
                     $parameters = $this->getParameters($constructor, $parameters);
                 }
 
-                $this->instance = $this->newInstanceArgs(array($parameters));
+                $this->instance = $this->newInstanceArgs($parameters);
             }
         } else {
             $this->instance = call_user_func_array($this->getName() . '::' . $this->constructor, $this->getParameters($this->getMethod($this->constructor), $parameters));
@@ -92,6 +99,8 @@ class Objective extends \ReflectionClass
         if (null === $method || 0 >= $method->getNumberOfRequiredParameters()) {
             return $parameters;
         }
+
+        $parameters = array_merge($this->parameters, $parameters);
 
         $args = array();
 
@@ -118,8 +127,8 @@ class Objective extends \ReflectionClass
      * @param $class
      * @return Objective|static
      */
-    public static function createObjective($class)
+    public static function createObjective($class, array $parameters = array())
     {
-        return new static($class);
+        return new static($class, $parameters);
     }
 }
