@@ -20,7 +20,53 @@ namespace Dobee\Container;
  */
 class Objective extends \ReflectionClass
 {
-    use ObjectiveTrait;
+    /**
+     * @var Container
+     */
+    protected $container;
+
+    /**
+     * @var string
+     */
+    protected $alias;
+
+    /**
+     * @param Container $container
+     * @return $this
+     */
+    public function setContainer(Container &$container)
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * @return Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param $alias
+     * @return $this
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
 
     /**
      * @var mixed
