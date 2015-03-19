@@ -78,7 +78,7 @@ class Container implements ContainerInterface
      */
     public function getInstance($name, array $parameters = array(), $merge = true)
     {
-        return $this->get($name)->getInstance($merge ? array_merge($parameters, $this->options) : $parameters);
+        return $this->get($name)->getInstance($merge ? array_merge($this->options, $parameters) : $parameters);
     }
 
     /**
