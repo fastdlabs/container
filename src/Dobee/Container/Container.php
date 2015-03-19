@@ -32,8 +32,9 @@ class Container implements ContainerInterface
 
     /**
      * @param array $objectives
+     * @param array $options
      */
-    public function __construct($objectives = array())
+    public function __construct($objectives = array(), array $options = array())
     {
         if (!empty($objectives)) {
             foreach ($objectives as $alias => $class) {
@@ -45,6 +46,8 @@ class Container implements ContainerInterface
                 $this->set($this->getAlias($class), $this->createObjective($class, $constructor));
             }
         }
+
+        $this->options = $options;
     }
 
     /**
@@ -70,11 +73,12 @@ class Container implements ContainerInterface
     /**
      * @param       $name
      * @param array $parameters
+     * @param bool  $merge
      * @return mixed
      */
-    public function getInstance($name, array $parameters = array())
+    public function getInstance($name, array $parameters = array(), $merge = true)
     {
-        return $this->get($name)->getInstance($parameters);
+        return $this->get($name)->getInstance($merge ? array_merge($parameters, $this->options) : $parameters);
     }
 
     /**
