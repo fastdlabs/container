@@ -34,10 +34,10 @@ class B{}
 
 class C{}
 
-$container = new \Dobee\Container\Container(null, array('var' => 1));
+$container = new \Dobee\Container\Container(null);
 
 echo '<pre>';
-$a = $container->get('A');
+$a = $container->get('A', array('var' => 1));
 
 //$container->getInstance('a')->getB();
-print_r($a->callMethod('getB'));
+print_r($a->callMethod('getB', array('var' => 1)));

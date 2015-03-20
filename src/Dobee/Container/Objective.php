@@ -96,6 +96,7 @@ class Objective extends \ReflectionClass
 
     /**
      * @param mixed $class
+     * @param array $parameters
      */
     public function __construct($class, array $parameters = array())
     {
@@ -118,12 +119,14 @@ class Objective extends \ReflectionClass
             return $this->instance;
         }
 
+        $parameters = array_merge($this->parameters, $parameters);
+
         if (empty($this->constructor)) {
             if (null === $this->getConstructor()) {
                 $this->instance = $this->newInstance();
             } else {
                 if (null !== ($constructor = $this->getConstructor())) {
-                    $parameters = $this->getParameters($constructor, $parameters);
+                    $parameters = $this->getParameters($constructor, array_merge($this->parameters, $parameters));
                 }
 
                 $this->instance = $this->newInstanceArgs($parameters);
@@ -145,8 +148,6 @@ class Objective extends \ReflectionClass
         if (null === $method || 0 >= $method->getNumberOfRequiredParameters()) {
             return $parameters;
         }
-
-        $parameters = array_merge($this->parameters, $parameters);
 
         $args = array();
 

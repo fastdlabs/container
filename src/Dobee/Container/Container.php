@@ -51,11 +51,12 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param string|object
+     * @param string|object $name
+     * @param array $parameters
      * @return Objective
      * @throw \InvalidArgumentException
      */
-    public function get($name)
+    public function get($name, array $parameters = array())
     {
         $alias = $this->getAlias($name);
 
@@ -64,7 +65,7 @@ class Container implements ContainerInterface
             if (false !== ($pos = strpos($name, ':'))) {
                 $constructor = substr($name, $pos + 1);
             }
-            $this->set($alias, $this->createObjective($name, $constructor, $this->options));
+            $this->set($alias, $this->createObjective($name, $constructor, $parameters));
         }
         
         return $this->container[$alias];
@@ -109,7 +110,10 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @return Objective
+     * @param       $class
+     * @param null  $constructor
+     * @param array $parameters
+     * @return Objective|static
      */
     public function createObjective($class, $constructor = null, array $parameters = array())
     {
