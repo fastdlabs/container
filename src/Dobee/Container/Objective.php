@@ -145,7 +145,7 @@ class Objective extends \ReflectionClass
      */
     public function getParameters(\ReflectionMethod $method = null, array $parameters = array())
     {
-        if (null === $method || 0 >= $method->getNumberOfRequiredParameters()) {
+        if (null === $method || count($parameters) === $method->getNumberOfParameters()) {
             return $parameters;
         }
 
