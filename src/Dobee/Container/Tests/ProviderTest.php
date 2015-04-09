@@ -50,12 +50,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    public function testPrintProviders()
-    {
-        echo PHP_EOL;
-        print_r($this->provider);
-    }
-
     public function testProviderGetService()
     {
         $demo = $this->provider->getService('demo');
@@ -85,5 +79,18 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             'Dobee\Container\Tests\DiStaticService',
             $this->provider->callServiceMethod($di, 'demoDiMethod')
         );
+
+        echo PHP_EOL;
+        print_r($this->provider);
+    }
+
+    public function testSetInstance()
+    {
+        $demo = new DemoService();
+
+        $this->provider->setService('demo2', $demo);
+
+        echo PHP_EOL;
+        print_r($this->provider);
     }
 }

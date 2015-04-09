@@ -47,9 +47,9 @@ class ServiceProvider implements ProviderInterface
      */
     public function setService($name, $service)
     {
-        $service = is_object($service) ? get_class($service) : $service;
+        $serviceName = is_object($service) ? get_class($service) : $service;
 
-        $serviceName = (false !== ($pos = strpos($service, '::'))) ? substr($service, 0, $pos) : $service;
+        $serviceName = (false !== ($pos = strpos($serviceName, '::'))) ? substr($serviceName, 0, $pos) : $serviceName;
 
         $this->services[$serviceName] = $service;
 
@@ -116,6 +116,7 @@ class ServiceProvider implements ProviderInterface
         }
 
         if (!is_object($this->services[$name]) || $flag) {
+            echo $name . PHP_EOL;
             $this->services[$name] = $this->newInstance($this->services[$name], $arguments);
         }
 
