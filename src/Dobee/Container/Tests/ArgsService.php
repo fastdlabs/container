@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/3/11
- * Time: 下午2:38
+ * Date: 15/4/9
+ * Time: 上午11:56
  * Github: https://www.github.com/janhuang 
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -13,7 +13,17 @@
 
 namespace Dobee\Container\Tests;
 
-class ContainerTest
+class ArgsService 
 {
+    private $name;
 
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }
