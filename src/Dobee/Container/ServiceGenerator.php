@@ -45,7 +45,7 @@ class ServiceGenerator
         }
 
         $reflection = new \ReflectionClass($service);
-        
+
         if (null === $constructor) {
             return $reflection->newInstanceArgs(self::getArguments($reflection->getConstructor(), $arguments));
         }
