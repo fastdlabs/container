@@ -38,6 +38,8 @@ class ServiceProvider implements ProviderInterface
         foreach ($services as $name => $service) {
             $this->setService($name, $service);
         }
+
+        ServiceGenerator::setProvider($this);
     }
 
     /**
@@ -116,7 +118,6 @@ class ServiceProvider implements ProviderInterface
         }
 
         if (!is_object($this->services[$name]) || $flag) {
-            echo $name . PHP_EOL;
             $this->services[$name] = $this->newInstance($this->services[$name], $arguments);
         }
 

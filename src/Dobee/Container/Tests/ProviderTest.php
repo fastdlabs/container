@@ -47,6 +47,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             'args'      => 'Dobee\Container\Tests\ArgsService',
             'static'    => 'Dobee\Container\Tests\StaticArgsService::single',
             'di'        => 'Dobee\Container\Tests\DiService',
+            'diS'       => 'Dobee\Container\Tests\DiStaticService::single',
         ));
     }
 
@@ -79,9 +80,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             'Dobee\Container\Tests\DiStaticService',
             $this->provider->callServiceMethod($di, 'demoDiMethod')
         );
-
-        echo PHP_EOL;
-        print_r($this->provider);
     }
 
     public function testSetInstance()
@@ -89,8 +87,5 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $demo = new DemoService();
 
         $this->provider->setService('demo2', $demo);
-
-        echo PHP_EOL;
-        print_r($this->provider);
     }
 }

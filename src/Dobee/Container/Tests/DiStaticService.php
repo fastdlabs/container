@@ -15,5 +15,10 @@ namespace Dobee\Container\Tests;
 
 class DiStaticService
 {
+    public static function single()
+    {
+        return new self();
+    }
 
+    private function __construct(){}
 }

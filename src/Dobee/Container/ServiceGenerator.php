@@ -21,6 +21,16 @@ namespace Dobee\Container;
 class ServiceGenerator
 {
     /**
+     * @var ProviderInterface
+     */
+    static $provider;
+
+    public static function setProvider(ProviderInterface $interface)
+    {
+        self::$provider = $interface;
+    }
+
+    /**
      * @param       $service
      * @param array $arguments
      * @return mixed|object
@@ -35,7 +45,7 @@ class ServiceGenerator
         }
 
         $reflection = new \ReflectionClass($service);
-
+        
         if (null === $constructor) {
             return $reflection->newInstanceArgs(self::getArguments($reflection->getConstructor(), $arguments));
         }
@@ -78,7 +88,7 @@ class ServiceGenerator
 
         foreach ($method->getParameters() as $index => $parameter) {
             if (($class = $parameter->getClass()) instanceof \ReflectionClass) {
-                $args[$index] = self::createService($class->getName());
+                $args[$index] = self::$provider->getService($class->getName());
             }
         }
 
