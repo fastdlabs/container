@@ -113,15 +113,15 @@ class ServiceProvider implements ProviderInterface
      */
     public function getService($name, array $arguments = array(), $flag = false)
     {
-        if (!($name = $this->getServiceName($name))) {
+        if (!($service = $this->getServiceName($name))) {
             throw new \LogicException(sprintf('Service "%s" is not exists.', $name));
         }
 
-        if (!is_object($this->services[$name]) || $flag) {
-            $this->services[$name] = $this->newInstance($this->services[$name], $arguments);
+        if (!is_object($this->services[$service]) || $flag) {
+            $this->services[$service] = $this->newInstance($this->services[$service], $arguments);
         }
 
-        return $this->services[$name];
+        return $this->services[$service];
     }
 
     /**
