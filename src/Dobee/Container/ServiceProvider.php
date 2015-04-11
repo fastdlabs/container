@@ -114,7 +114,7 @@ class ServiceProvider implements ProviderInterface
     public function getService($name, array $arguments = array(), $flag = false)
     {
         if (!($name = $this->getServiceName($name))) {
-            return false;
+            throw new \LogicException(sprintf('Service "%s" is not exists.', $name));
         }
 
         if (!is_object($this->services[$name]) || $flag) {
