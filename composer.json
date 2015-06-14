@@ -1,6 +1,8 @@
 {
     "name": "dobee/container",
     "description": "dobee container component",
+    "type": "library",
+    "keywords": ["Container", "dobee"],
     "license": "MIT",
     "authors": [
         {
@@ -10,15 +12,11 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4.0",
-		"phpunit/phpunit": "4.5.*"
+        "php": ">=5.4.0"
     },
     "autoload": {
         "psr-4": {
             "Dobee\\": "src/Dobee"
         }
-    },
-    "config": {
-        "bin-dir": "bin"
     }
 }
