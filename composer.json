@@ -1,8 +1,8 @@
 {
-    "name": "dobee/container",
-    "description": "dobee container component",
+    "name": "fastd/container",
+    "description": "FastD container component",
     "type": "library",
-    "keywords": ["Container", "dobee"],
+    "keywords": ["Container", "FastD"],
     "license": "MIT",
     "authors": [
         {
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dobee\\": "src/Dobee"
+            "FastD\\": "src/FastD"
         }
     }
 }

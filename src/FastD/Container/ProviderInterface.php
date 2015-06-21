@@ -11,12 +11,12 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Container;
+namespace FastD\Container;
 
 /**
  * Interface ProviderInterface
  *
- * @package Dobee\Container
+ * @package FastD\Container
  */
 interface ProviderInterface
 {

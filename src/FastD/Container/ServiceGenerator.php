@@ -11,12 +11,12 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Container;
+namespace FastD\Container;
 
 /**
  * Class ServiceGenerator
  *
- * @package Dobee\Container
+ * @package FastD\Container
  */
 class ServiceGenerator
 {

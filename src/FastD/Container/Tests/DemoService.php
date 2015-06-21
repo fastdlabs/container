@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/4/9
- * Time: 上午11:35
+ * Time: 上午11:34
  * Github: https://www.github.com/janhuang 
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -11,12 +11,12 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Container\Tests;
+namespace FastD\Container\Tests;
 
-class TestService 
+class DemoService
 {
-    public static function single()
+    public function getName()
     {
-        return new static();
+        return 'demo';
     }
 }
