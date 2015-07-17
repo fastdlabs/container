@@ -102,6 +102,11 @@ class ServiceProvider implements ProviderInterface
             return $name;
         }
 
+        if (class_exists($name)) {
+            $this->setService($name, $name);
+            return $name;
+        }
+
         return false;
     }
 

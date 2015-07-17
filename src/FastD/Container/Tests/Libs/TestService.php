@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Container\Tests;
+namespace FastD\Container\Tests\Libs;
 
 class TestService 
 {
