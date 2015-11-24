@@ -21,9 +21,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Container();
 
-        $service = $container->getProvider()->getServiceName('FastD\\Container\\Tests\\Libs\\TestService');
+        $container->set('demo', 'FastD\Container\Tests\Libs\\TestService');
 
-        
-//        $this->assertEquals('FastD\\Container\\Tests\\Libs\\TestService', $service);
+        print_r($container);
     }
 }

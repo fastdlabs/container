@@ -13,17 +13,19 @@
 
 namespace FastD\Container;
 
+use FastD\Container\Provider\ServiceProvider;
+
 /**
  * Class Container
  *
  * @package FastD\Container
  */
-class Container
+class Container implements ContainerInterface
 {
     /**
      * @var ServiceProvider
      */
-    private $provider;
+    protected $provider;
 
     /**
      * @param array $services
@@ -54,13 +56,5 @@ class Container
     public function get($name, array $arguments = array(), $flag = false)
     {
         return $this->provider->getService($name, $arguments, $flag);
-    }
-
-    /**
-     * @return ServiceProvider
-     */
-    public function getProvider()
-    {
-        return $this->provider;
     }
 }

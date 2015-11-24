@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Container;
+namespace FastD\Container\Provider;
 
 /**
  * Interface ProviderInterface
@@ -20,6 +20,8 @@ namespace FastD\Container;
  */
 interface ProviderInterface
 {
+//    public function removeService($name);
+
     /**
      * @param $name
      * @param $service

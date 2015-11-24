@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Container;
+namespace FastD\Container\Provider;
 
 /**
  * Class ServiceProvider
@@ -23,12 +23,12 @@ class ServiceProvider implements ProviderInterface
     /**
      * @var array
      */
-    private $services = array();
+    private $services = [];
 
     /**
      * @var array
      */
-    private $alias = array();
+    private $alias = [];
 
     /**
      * @param array $services
@@ -38,8 +38,6 @@ class ServiceProvider implements ProviderInterface
         foreach ($services as $name => $service) {
             $this->setService($name, $service);
         }
-
-        ServiceGenerator::setProvider($this);
     }
 
     /**
