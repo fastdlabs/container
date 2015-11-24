@@ -47,11 +47,11 @@ class Provider implements ProviderInterface
      */
     public function __construct(array $services = array())
     {
+        $this->service = new Service();
+
         foreach ($services as $name => $service) {
             $this->setService($name, $service);
         }
-
-        $this->service = new Service();
 
         $this->extractor = new Extractor($this);
     }
