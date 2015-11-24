@@ -15,8 +15,32 @@ namespace FastD\Container\Tests\Libs;
 
 class TestService 
 {
+    public static $ts2;
+
     public static function single(TestService2 $service)
     {
-        print_r($service);
+        self::$ts2 = $service;
+        return new static();
+    }
+
+    public function testIoC(TestService2 $service2 = null)
+    {
+        if (null === $service2) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected $name;
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }

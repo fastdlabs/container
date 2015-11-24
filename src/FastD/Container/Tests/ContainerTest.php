@@ -14,18 +14,54 @@
 namespace FastD\Container\Tests;
 
 use FastD\Container\Container;
+use FastD\Container\Tests\Libs\TestService;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testGetServiceName()
-    {
-        $container = new Container();
+    /**
+     * @var Container
+     */
+    protected $container;
 
-        $container->set('demo', 'FastD\\Container\\Tests\\Libs\\TestService::single');
-        $container->set('demo2', 'FastD\\Container\\Tests\\Libs\\TestService2');
-//        print_r($container);
-        $demo = $container->get('demo');
-        $demo->getInstance();
-//        $container->get('demo');
+    public function setUp()
+    {
+        $this->container = new Container();
+
+        $this->container->set('demo', 'FastD\\Container\\Tests\\Libs\\TestService::single');
+        $this->container->set('demo2', 'FastD\\Container\\Tests\\Libs\\TestService2');
+    }
+
+    public function testGetService()
+    {
+        $demo = $this->container->get('demo');
+        $this->assertEquals('FastD\Container\Tests\Libs\TestService', $demo->getName());
+        $this->assertEquals('single', $demo->getConstructor());
+        $this->assertEquals('FastD\Container\Tests\Libs\TestService', $demo->getClass());
+    }
+
+    public function testIoC()
+    {
+        $demo = $this->container->get('demo')->getInstance();
+        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService2', TestService::$ts2);
+        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService', $demo);
+        $this->assertTrue($this->container->get('demo')->testIoC());
+    }
+
+    public function testSingleton()
+    {
+        $demo = $this->container->get('demo')->getInstance();
+        $demo->setName('janhuang');
+        $this->assertEquals('janhuang', $demo->getName());
+
+        $demo2 = $this->container->get('demo')->getInstance();
+        $this->assertEquals(null, $demo2->getName());
+
+        $demo3 = $this->container->get('demo')->singleton();
+        $this->assertEquals(null, $demo3->getName());
+        $demo3->setName('demo3');
+        $this->assertEquals('demo3', $demo3->getName());
+
+        $demo4 = $this->container->get('demo')->singleton();
+        $this->assertEquals('demo3', $demo4->getName());
     }
 }

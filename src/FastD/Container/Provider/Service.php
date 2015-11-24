@@ -14,7 +14,7 @@
 namespace FastD\Container\Provider;
 
 /**
- * Class ServiceGenerator
+ * Class Service
  *
  * @package FastD\Container\Provider
  */
@@ -40,6 +40,9 @@ class Service
      */
     protected $provider;
 
+    /**
+     * @var mixed
+     */
     protected $instance;
 
     /**
@@ -133,15 +136,31 @@ class Service
         return $this;
     }
 
-    public function getInstance(array $arguments = [])
+    /**
+     * Get singleton service object.
+     *
+     * @param array $arguments
+     * @return mixed
+     */
+    public function singleton(array $arguments = [])
     {
         if (null !== $this->instance) {
             return $this->instance;
         }
 
+        $this->instance = $this->getInstance($arguments);
+
+        return $this->instance;
+    }
+
+    /**
+     * @param array $arguments
+     * @return mixed
+     */
+    public function getInstance(array $arguments = [])
+    {
         if (null === $this->getConstructor()) {
-            $this->instance = new $this->class;
-            return $this->instance;
+            return new $this->class;
         }
 
         $arguments = $this->getProvider()->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
@@ -150,11 +169,12 @@ class Service
             return call_user_func_array([$this->getClass(), $this->getConstructor()], $arguments);
         }
 
-        $class = $this->getClass();
-        $constructor = $this->getConstructor();
-        return call_user_func_array("{$class}::{$constructor}", $arguments);
+        return call_user_func_array("{$this->getClass()}::{$this->getConstructor()}", $arguments);
     }
 
+    /**
+     * @return $this
+     */
     public function __clone()
     {
         $this->name = null;
@@ -163,12 +183,19 @@ class Service
         return $this;
     }
 
-    public function __call($method, array $args = [])
+    /**
+     * @param       $method
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call($method, array $arguments = [])
     {
         if (!method_exists($this->getClass(), $method)) {
             throw new \LogicException(sprintf('Method "%s" is not exists in Class "%s"', $method, $this->getClass()));
         }
 
+        $arguments = $this->getProvider()->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
 
+        return call_user_func_array([$this->singleton(), $method], $arguments);
     }
 }

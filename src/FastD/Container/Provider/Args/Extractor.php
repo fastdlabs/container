@@ -21,18 +21,29 @@ use FastD\Container\Provider\ProviderInterface;
  *
  * @package FastD\Container\Provider\Args
  */
-class Extractor
+class Extractor implements ExtraInterface
 {
     /**
      * @var ProviderInterface
      */
     protected $provider;
 
+    /**
+     * Extractor constructor.
+     *
+     * @param ProviderInterface $providerInterface
+     */
     public function __construct(ProviderInterface $providerInterface)
     {
         $this->provider = $providerInterface;
     }
 
+    /**
+     * @param       $object
+     * @param       $method
+     * @param array $arguments
+     * @return array
+     */
     public function getArguments($object, $method, array $arguments = [])
     {
         if (null === $method) {

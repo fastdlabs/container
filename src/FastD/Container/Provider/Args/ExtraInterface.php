@@ -16,5 +16,5 @@ namespace FastD\Container\Provider\Args;
 
 interface ExtraInterface
 {
-
+    public function getArguments($object, $method, array $arguments = []);
 }
