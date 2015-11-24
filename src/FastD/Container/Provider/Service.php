@@ -33,7 +33,7 @@ class Service
     /**
      * @var string
      */
-    protected $constructor = '__construct';
+    protected $constructor;
 
     /**
      * @var Provider
@@ -159,14 +159,10 @@ class Service
      */
     public function getInstance(array $arguments = [])
     {
-        if (!method_exists($this->class, $this->getConstructor())) {
-            return new $this->class;
-        }
-
         $arguments = $this->getProvider()->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
 
-        if ('__construct' == $this->getConstructor()) {
-            return call_user_func_array([$this->getClass(), $this->getConstructor()], $arguments);
+        if (null === $this->getConstructor()) {
+            return (new \ReflectionClass($this->getClass()))->newInstanceArgs($arguments);
         }
 
         return call_user_func_array("{$this->getClass()}::{$this->getConstructor()}", $arguments);
@@ -179,7 +175,7 @@ class Service
     {
         $this->name = null;
         $this->class = null;
-        $this->constructor = '__construct';
+        $this->constructor = null;
         return $this;
     }
 

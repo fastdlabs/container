@@ -29,7 +29,25 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $this->container->set('demo', 'FastD\\Container\\Tests\\Libs\\TestService::single');
         $this->container->set('demo2', 'FastD\\Container\\Tests\\Libs\\TestService2');
+        $this->container->set('demo3', 'FastD\\Container\\Tests\\Libs\\TestConstructor');
+        $this->container->set('demo4', 'FastD\\Container\\Tests\\Libs\\TestConstructorArgs');
     }
+
+
+    public function testConstructArgs()
+    {
+        $demo = $this->container->get('demo4')->getInstance(['jan']);
+        $this->assertEquals('jan', $demo->name);
+    }
+
+    public function testConstruct()
+    {
+        $demo = $this->container->get('demo3');
+        $this->assertInstanceOf('FastD\Container\Provider\Service', $demo);
+        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestConstructor', $demo->singleton());
+        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestConstructor', $demo->getInstance());
+    }
+
 
     public function testGetService()
     {
