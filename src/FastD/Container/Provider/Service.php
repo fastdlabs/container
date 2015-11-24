@@ -139,9 +139,14 @@ class Service
             return $this->instance;
         }
 
+        if (null === $this->getConstructor()) {
+            $this->instance = new $this->class;
+            return $this->instance;
+        }
+
         $arguments = $this->getProvider()->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
-        print_r($arguments);die;
-        if ('__construct' === $this->getConstructor()) {
+
+        if ('__construct' == $this->getConstructor()) {
             return call_user_func_array([$this->getClass(), $this->getConstructor()], $arguments);
         }
 
