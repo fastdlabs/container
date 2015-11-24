@@ -13,7 +13,7 @@
 
 namespace FastD\Container;
 
-use FastD\Container\Provider\ServiceProvider;
+use FastD\Container\Provider\Provider;
 
 /**
  * Class Container
@@ -23,7 +23,7 @@ use FastD\Container\Provider\ServiceProvider;
 class Container implements ContainerInterface
 {
     /**
-     * @var ServiceProvider
+     * @var Provider
      */
     protected $provider;
 
@@ -32,7 +32,7 @@ class Container implements ContainerInterface
      */
     public function __construct(array $services = array())
     {
-        $this->provider = new ServiceProvider($services);
+        $this->provider = new Provider($services);
     }
 
     /**

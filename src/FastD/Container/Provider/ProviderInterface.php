@@ -36,8 +36,7 @@ interface ProviderInterface
     /**
      * @param       $name
      * @param array $arguments
-     * @param bool  $flag
-     * @return mixed
+     * @return Service
      */
-    public function getService($name, array $arguments = array(), $flag = false);
+    public function getService($name, array $arguments = array());
 }

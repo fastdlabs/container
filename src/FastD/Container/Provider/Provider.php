@@ -13,15 +13,17 @@
 
 namespace FastD\Container\Provider;
 
+use FastD\Container\Provider\Args\Extractor;
+
 /**
  * Class ServiceProvider
  *
  * @package FastD\Container\Provider
  */
-class ServiceProvider implements ProviderInterface
+class Provider implements ProviderInterface
 {
     /**
-     * @var ServiceGenerator[]
+     * @var Service[]
      */
     protected $services = [];
 
@@ -31,9 +33,9 @@ class ServiceProvider implements ProviderInterface
     protected $alias = [];
 
     /**
-     * @var ServiceGenerator
+     * @var Service
      */
-    protected $serviceGenerator;
+    protected $service;
 
     /**
      * @param array $services
@@ -44,7 +46,7 @@ class ServiceProvider implements ProviderInterface
             $this->setService($name, $service);
         }
 
-        $this->serviceGenerator = new ServiceGenerator();
+        $this->service = new Service();
     }
 
     /**
@@ -54,13 +56,13 @@ class ServiceProvider implements ProviderInterface
      */
     public function setService($name, $service)
     {
-        $generator = clone $this->serviceGenerator;
+        $service = clone $this->service;
 
-        $generator->setClass($service);
+        $service->setClass($service);
 
-        $this->services[$generator->getName()] = $generator;
+        $this->services[$service->getName()] = $service;
 
-        $this->alias[$name] = $generator->getName();
+        $this->alias[$name] = $service->getName();
 
         return $this;
     }
@@ -77,25 +79,11 @@ class ServiceProvider implements ProviderInterface
     /**
      * @param       $name
      * @param array $arguments
-     * @param bool  $flag
-     * @return bool
+     * @return Service
      */
-    public function getService($name, array $arguments = array(), $flag = false)
+    public function getService($name, array $arguments = array())
     {
-        $name = $this->getServiceName($name);
-
-        $service = $this->services[$name];
-
-        if (!$flag && !($service instanceof ServiceGenerator)) {
-            return $service;
-        }
-        $instance = $service->newInstance($arguments);
-
-        if (!$flag) {
-            $this->services[$name] = $instance;
-        }
-
-        return $instance;
+        return $this->services[$this->getServiceName($name)];
     }
 
     /**

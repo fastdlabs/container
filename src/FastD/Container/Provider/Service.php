@@ -20,7 +20,7 @@ use FastD\Container\Provider\Args\Extractor;
  *
  * @package FastD\Container\Provider
  */
-class ServiceGenerator
+class Service
 {
     /**
      * @var string
@@ -36,6 +36,32 @@ class ServiceGenerator
      * @var string|null
      */
     protected $constructor;
+
+    /**
+     * @var Provider
+     */
+    protected $provider;
+
+    protected $instance;
+
+    /**
+     * @return Provider
+     */
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+
+    /**
+     * @param ProviderInterface $provider
+     * @return $this
+     */
+    public function setProvider(ProviderInterface $provider)
+    {
+        $this->provider = $provider;
+
+        return $this;
+    }
 
     /**
      * @return mixed
@@ -109,8 +135,10 @@ class ServiceGenerator
         return $this;
     }
 
-    public function newInstance(array $arguments = [])
+    public function getInstance(array $arguments = [])
     {
+        $arguments = $this->extraArguments($this->getConstructor(), $arguments);
+
         if (null === $this->getConstructor()) {
             return call_user_func_array([$this->getClass(), $this->getConstructor()], $arguments);
         }
@@ -120,11 +148,25 @@ class ServiceGenerator
         return call_user_func_array("{$class}::{$constructor}", $arguments);
     }
 
+    public function extraArguments($method, array $arguments = [])
+    {
+        return $arguments;
+    }
+
     public function __clone()
     {
         $this->name = null;
         $this->class = null;
         $this->constructor = null;
         return $this;
+    }
+
+    public function __call($method, array $args = [])
+    {
+        if (!method_exists($this->getClass(), $method)) {
+            throw new \LogicException(sprintf('Method "%s" is not exists in Class "%s"', $method, $this->getClass()));
+        }
+
+
     }
 }
