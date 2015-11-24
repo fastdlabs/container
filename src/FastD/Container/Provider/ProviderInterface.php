@@ -16,12 +16,10 @@ namespace FastD\Container\Provider;
 /**
  * Interface ProviderInterface
  *
- * @package FastD\Container
+ * @package FastD\Container\Provider
  */
 interface ProviderInterface
 {
-//    public function removeService($name);
-
     /**
      * @param $name
      * @param $service

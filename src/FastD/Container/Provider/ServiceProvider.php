@@ -16,19 +16,24 @@ namespace FastD\Container\Provider;
 /**
  * Class ServiceProvider
  *
- * @package FastD\Container
+ * @package FastD\Container\Provider
  */
 class ServiceProvider implements ProviderInterface
 {
     /**
-     * @var array
+     * @var ServiceGenerator[]
      */
-    private $services = [];
+    protected $services = [];
 
     /**
      * @var array
      */
-    private $alias = [];
+    protected $alias = [];
+
+    /**
+     * @var ServiceGenerator
+     */
+    protected $serviceGenerator;
 
     /**
      * @param array $services
@@ -38,6 +43,8 @@ class ServiceProvider implements ProviderInterface
         foreach ($services as $name => $service) {
             $this->setService($name, $service);
         }
+
+        $this->serviceGenerator = new ServiceGenerator();
     }
 
     /**
@@ -47,17 +54,40 @@ class ServiceProvider implements ProviderInterface
      */
     public function setService($name, $service)
     {
-        $serviceName = is_object($service) ? get_class($service) : $service;
+        $generator = clone $this->serviceGenerator;
 
-        $serviceName = (false !== ($pos = strpos($serviceName, '::'))) ? substr($serviceName, 0, $pos) : $serviceName;
+        $generator->setClass($service);
 
-        $this->services[$serviceName] = $service;
+        $this->services[$generator->getName()] = $generator;
 
-        $this->alias[$name] = $serviceName;
-
-        unset($name, $service, $serviceName);
+        $this->alias[$name] = $generator->getName();
 
         return $this;
+    }
+
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @param bool  $flag
+     * @return bool
+     */
+    public function getService($name, array $arguments = array(), $flag = false)
+    {
+        $name = $this->getServiceName($name);
+
+        $service = $this->services[$name];
+
+        if ($flag) {
+            return $service->newInstance();
+        }
+
+        if (!($service instanceof ServiceGenerator)) {
+            return $service;
+        }
+
+        $this->services[$name] = $service->newInstance();
+
+        return $this->services[$name];
     }
 
     /**
@@ -67,23 +97,6 @@ class ServiceProvider implements ProviderInterface
     public function hasService($name)
     {
         return isset($this->alias[$name]) || isset($this->services[$name]);
-    }
-
-    /**
-     * @param $name
-     * @return bool|mixed
-     */
-    public function getAlias($name)
-    {
-        if (isset($this->alias[$name])) {
-            return $name;
-        }
-
-        if (!$this->getServiceName($name)) {
-            return false;
-        }
-
-        return array_search($name, $this->alias);
     }
 
     /**
@@ -100,51 +113,6 @@ class ServiceProvider implements ProviderInterface
             return $name;
         }
 
-        if (class_exists($name)) {
-            $this->setService($name, $name);
-            return $name;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param       $name
-     * @param array $arguments
-     * @param bool  $flag
-     * @return bool
-     */
-    public function getService($name, array $arguments = array(), $flag = false)
-    {
-        if (!($service = $this->getServiceName($name))) {
-            throw new \LogicException(sprintf('Service "%s" is not exists.', $name));
-        }
-
-        if (!is_object($this->services[$service]) || $flag) {
-            $this->services[$service] = $this->newInstance($this->services[$service], $arguments);
-        }
-
-        return $this->services[$service];
-    }
-
-    /**
-     * @param       $service
-     * @param array $arguments
-     * @return mixed|object
-     */
-    public function newInstance($service, array $arguments = array())
-    {
-        return ServiceGenerator::createService($service, $arguments);
-    }
-
-    /**
-     * @param       $service
-     * @param       $method
-     * @param array $arguments
-     * @return mixed
-     */
-    public function callServiceMethod($service, $method, array $arguments = array())
-    {
-        return ServiceGenerator::callServiceCallback($service, $method, $arguments);
+        throw new \LogicException(sprintf('Service "%s" is not exists.', $name));
     }
 }

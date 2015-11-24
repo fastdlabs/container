@@ -11,23 +11,119 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Container;
+namespace FastD\Container\Provider;
 
 /**
  * Class ServiceGenerator
  *
- * @package FastD\Container
+ * @package FastD\Container\Provider
  */
 class ServiceGenerator
 {
     /**
-     * @var ProviderInterface
+     * @var string
      */
-    static $provider;
+    protected $name;
 
-    public static function setProvider(ProviderInterface $interface)
+    /**
+     * @var string
+     */
+    protected $class;
+
+    /**
+     * @var string|null
+     */
+    protected $constructor;
+
+    /**
+     * @return mixed
+     */
+    public function getConstructor()
     {
-        self::$provider = $interface;
+        return $this->constructor;
+    }
+
+    /**
+     * @param mixed $constructor
+     * @return $this
+     */
+    public function setConstructor($constructor)
+    {
+        $this->constructor = $constructor;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClass()
+    {
+        return $this->class;
+    }
+
+    /**
+     * @param mixed $class
+     * @return $this
+     */
+    public function setClass($class)
+    {
+        $this->class = $class;
+
+        if (is_object($class)) {
+            $name = get_class($class);
+            $this->setName($name);
+            return $this;
+        }
+
+        if (strpos($class, '::')) {
+            list($name, $constructor) = explode('::', $class);
+            $this->setConstructor($constructor);
+            $this->setName($name);
+            $this->class = $name;
+        } else {
+            $this->setName($class);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function newInstance()
+    {
+        if (null === $this->getConstructor()) {
+            return new $this->class;
+        }
+
+        $class = $this->getClass();
+        $constructor = $this->getConstructor();
+        return $class::$constructor;
+    }
+
+    public function __clone()
+    {
+        $this->name = null;
+        $this->class = null;
+        $this->constructor = null;
+        return $this;
     }
 
     /**
