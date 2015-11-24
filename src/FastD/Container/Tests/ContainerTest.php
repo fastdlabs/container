@@ -24,7 +24,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $container->set('demo', 'FastD\\Container\\Tests\Libs\\TestService');
         $container->set('demo2', 'FastD\\Container\\Tests\Libs\\TestService::single');
 
-        $container->get('demo');
+        $demo = $container->get('demo');
+        print_r($demo);
         print_r($container);
 //        $container->get('demo');
     }

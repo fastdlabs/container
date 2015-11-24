@@ -13,6 +13,8 @@
 
 namespace FastD\Container\Provider;
 
+use FastD\Container\Provider\Args\Extractor;
+
 /**
  * Class ServiceGenerator
  *
@@ -131,7 +133,7 @@ class ServiceGenerator
      * @param array $arguments
      * @return mixed|object
      */
-    public static function createService($service, array $arguments = array())
+    public function createService($service, array $arguments = array())
     {
         $constructor = null;
 
@@ -158,7 +160,7 @@ class ServiceGenerator
      * @param array $arguments
      * @return mixed
      */
-    public static function callServiceCallback($service, $method = null, array $arguments = array())
+    public function callServiceCallback($service, $method = null, array $arguments = array())
     {
         $reflection = new \ReflectionClass($service);
 
@@ -169,25 +171,8 @@ class ServiceGenerator
         return $callback;
     }
 
-    /**
-     * @param \ReflectionMethod $method
-     * @param array             $arguments
-     * @return array
-     */
-    public static function getArguments(\ReflectionMethod $method = null, array $arguments = array())
+    public function getParameters(array $arguments = array())
     {
-        if (null === $method || count($arguments) === $method->getNumberOfParameters()) {
-            return $arguments;
-        }
 
-        $args = array();
-
-        foreach ($method->getParameters() as $index => $parameter) {
-            if (($class = $parameter->getClass()) instanceof \ReflectionClass) {
-                $args[$index] = self::$provider->getService($class->getName());
-            }
-        }
-
-        return array_merge($args, $arguments);
     }
 }

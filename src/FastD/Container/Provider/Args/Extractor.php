@@ -12,10 +12,18 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Container\Args;
+namespace FastD\Container\Provider\Args;
 
+/**
+ * Class Extractor
+ *
+ * @package FastD\Container\Provider\Args
+ */
 class Extractor
 {
+    public static function getParametersCount($object, $method)
+    {}
+
     /**
      * @param $object
      * @param $method
