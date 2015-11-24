@@ -38,5 +38,5 @@ interface ProviderInterface
      * @param array $arguments
      * @return Service
      */
-    public function getService($name, array $arguments = array());
+    public function getService($name);
 }

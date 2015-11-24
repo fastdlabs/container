@@ -38,6 +38,11 @@ class Provider implements ProviderInterface
     protected $service;
 
     /**
+     * @var Extractor
+     */
+    protected $extractor;
+
+    /**
      * @param array $services
      */
     public function __construct(array $services = array())
@@ -47,18 +52,21 @@ class Provider implements ProviderInterface
         }
 
         $this->service = new Service();
+
+        $this->extractor = new Extractor($this);
     }
 
     /**
      * @param $name
-     * @param $service
+     * @param $class
      * @return $this
      */
-    public function setService($name, $service)
+    public function setService($name, $class)
     {
         $service = clone $this->service;
 
-        $service->setClass($service);
+        $service->setClass($class);
+        $service->setProvider($this);
 
         $this->services[$service->getName()] = $service;
 
@@ -78,10 +86,9 @@ class Provider implements ProviderInterface
 
     /**
      * @param       $name
-     * @param array $arguments
      * @return Service
      */
-    public function getService($name, array $arguments = array())
+    public function getService($name)
     {
         return $this->services[$this->getServiceName($name)];
     }
@@ -101,5 +108,16 @@ class Provider implements ProviderInterface
         }
 
         throw new \LogicException(sprintf('Service "%s" is not exists.', $name));
+    }
+
+    /**
+     * @param       $object
+     * @param       $method
+     * @param array $arguments
+     * @return array
+     */
+    public function extraArguments($object, $method, array $arguments = [])
+    {
+        return $this->extractor->getArguments($object, $method, $arguments);
     }
 }

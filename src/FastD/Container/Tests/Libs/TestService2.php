@@ -13,10 +13,6 @@
 
 namespace FastD\Container\Tests\Libs;
 
-class TestService 
+class TestService2
 {
-    public static function single(TestService2 $service)
-    {
-        print_r($service);
-    }
 }

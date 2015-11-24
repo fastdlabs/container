@@ -14,6 +14,8 @@
 
 namespace FastD\Container\Provider\Args;
 
+use FastD\Container\Provider\ProviderInterface;
+
 /**
  * Class Extractor
  *
@@ -21,18 +23,40 @@ namespace FastD\Container\Provider\Args;
  */
 class Extractor
 {
-    public static function getParametersCount($object, $method)
-    {
+    /**
+     * @var ProviderInterface
+     */
+    protected $provider;
 
+    public function __construct(ProviderInterface $providerInterface)
+    {
+        $this->provider = $providerInterface;
     }
 
-    /**
-     * @param $object
-     * @param $method
-     * @return array
-     */
-    public static function getArguments($object, $method)
+    public function getArguments($object, $method, array $arguments = [])
     {
+        if (null === $method) {
+            return $arguments;
+        }
 
+        $reflection = new \ReflectionMethod($object, $method);
+
+        if (0 >= $reflection->getNumberOfRequiredParameters()) {
+            return $arguments;
+        }
+
+        $args = array();
+
+        foreach ($reflection->getParameters() as $index => $parameter) {
+            if (($class = $parameter->getClass()) instanceof \ReflectionClass) {
+                $name = $class->getName();
+                if (!$this->provider->hasService($name)) {
+                    $this->provider->setService($name, $name);
+                }
+                $args[$index] = $this->provider->getService($name)->getInstance();
+            }
+        }
+
+        return array_merge($args, $arguments);
     }
 }

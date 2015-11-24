@@ -13,8 +13,6 @@
 
 namespace FastD\Container\Provider;
 
-use FastD\Container\Provider\Args\Extractor;
-
 /**
  * Class ServiceGenerator
  *
@@ -33,7 +31,7 @@ class Service
     protected $class;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $constructor;
 
@@ -96,21 +94,21 @@ class Service
      */
     public function setClass($class)
     {
-        $this->class = $class;
-
         if (is_object($class)) {
             $name = get_class($class);
             $this->setName($name);
+            $this->class = $name;
             return $this;
         }
 
-        if (strpos($class, '::')) {
+        if (false !== strpos($class, '::')) {
             list($name, $constructor) = explode('::', $class);
             $this->setConstructor($constructor);
             $this->setName($name);
             $this->class = $name;
         } else {
             $this->setName($class);
+            $this->class = $class;
         }
 
         return $this;
@@ -137,20 +135,19 @@ class Service
 
     public function getInstance(array $arguments = [])
     {
-        $arguments = $this->extraArguments($this->getConstructor(), $arguments);
+        if (null !== $this->instance) {
+            return $this->instance;
+        }
 
-        if (null === $this->getConstructor()) {
+        $arguments = $this->getProvider()->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
+        print_r($arguments);die;
+        if ('__construct' === $this->getConstructor()) {
             return call_user_func_array([$this->getClass(), $this->getConstructor()], $arguments);
         }
 
         $class = $this->getClass();
         $constructor = $this->getConstructor();
         return call_user_func_array("{$class}::{$constructor}", $arguments);
-    }
-
-    public function extraArguments($method, array $arguments = [])
-    {
-        return $arguments;
     }
 
     public function __clone()
