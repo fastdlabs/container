@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/11/24
- * Time: 上午11:03
+ * Time: 下午7:05
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,15 +12,19 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Container;
+namespace FastD\Container\Tests\Libs;
 
-interface ContainerInterface
+class TestConstructIoC
 {
-    public function set($name, $class);
+    protected $service;
 
-    public function get($name);
+    public function __construct(TestService2 $service2)
+    {
+        $this->service = $service2;
+    }
 
-    public function instance($name, array $arguments = []);
-
-    public function singleton($name, array $arguments = []);
+    public function getService()
+    {
+        return null === $this->service ? false : true;
+    }
 }

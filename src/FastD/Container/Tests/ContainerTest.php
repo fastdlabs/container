@@ -31,8 +31,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set('demo2', 'FastD\\Container\\Tests\\Libs\\TestService2');
         $this->container->set('demo3', 'FastD\\Container\\Tests\\Libs\\TestConstructor');
         $this->container->set('demo4', 'FastD\\Container\\Tests\\Libs\\TestConstructorArgs');
+        $this->container->set('demo5', 'FastD\\Container\\Tests\\Libs\\TestConstructIoC');
     }
 
+    public function testIoC()
+    {
+        $demo = $this->container->get('demo')->getInstance();
+        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService2', TestService::$ts2);
+        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService', $demo);
+        $this->assertTrue($this->container->get('demo')->testIoC());
+
+        $demo4 = $this->container->singleton('demo5');
+        $this->assertTrue($demo4->getService());
+    }
 
     public function testConstructArgs()
     {
@@ -57,13 +68,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('FastD\Container\Tests\Libs\TestService', $demo->getClass());
     }
 
-    public function testIoC()
-    {
-        $demo = $this->container->get('demo')->getInstance();
-        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService2', TestService::$ts2);
-        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService', $demo);
-        $this->assertTrue($this->container->get('demo')->testIoC());
-    }
+
 
     public function testSingleton()
     {

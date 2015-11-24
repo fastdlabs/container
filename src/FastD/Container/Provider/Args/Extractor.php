@@ -58,13 +58,14 @@ class Extractor implements ExtraInterface
 
         $args = array();
 
-        foreach ($reflection->getParameters() as $index => $parameter) {
+        foreach ($reflection->getParameters() as $index => $parameter) {;
             if (($class = $parameter->getClass()) instanceof \ReflectionClass) {
                 $name = $class->getName();
                 if (!$this->provider->hasService($name)) {
                     $this->provider->setService($name, $name);
                 }
-                $args[$index] = $this->provider->getService($name)->getInstance();
+
+                $args[$index] = $this->provider->getInstance($name);
             }
         }
 

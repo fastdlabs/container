@@ -94,6 +94,26 @@ class Provider implements ProviderInterface
     }
 
     /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function getInstance($name, array $arguments = [])
+    {
+        return $this->getService($name)->getInstance($arguments);
+    }
+
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function singleton($name, array $arguments = [])
+    {
+        return $this->getService($name)->singleton($arguments);
+    }
+
+    /**
      * @param $name
      * @return bool
      */

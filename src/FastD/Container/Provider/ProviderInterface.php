@@ -35,8 +35,21 @@ interface ProviderInterface
 
     /**
      * @param       $name
-     * @param array $arguments
      * @return Service
      */
     public function getService($name);
+
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function getInstance($name, array $arguments = []);
+
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function singleton($name, array $arguments = []);
 }

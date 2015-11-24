@@ -56,4 +56,24 @@ class Container implements ContainerInterface
     {
         return $this->provider->getService($name);
     }
+
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function instance($name, array $arguments = [])
+    {
+        return $this->provider->getInstance($name, $arguments);
+    }
+
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function singleton($name, array $arguments = [])
+    {
+        return $this->provider->singleton($name, $arguments);
+    }
 }

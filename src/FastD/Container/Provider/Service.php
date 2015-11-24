@@ -160,11 +160,17 @@ class Service
      */
     public function getInstance(array $arguments = [])
     {
-        $arguments = $this->getProvider()->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
-
         if (null === $this->getConstructor()) {
-            return (new \ReflectionClass($this->getClass()))->newInstanceArgs($arguments);
+            $reflection = new \ReflectionClass($this->getClass());
+
+            if (null !== $reflection->getConstructor()) {
+                $arguments = $this->provider->extraArguments($this->getClass(), $reflection->getConstructor()->getName(), $arguments);
+            }
+
+            return $reflection->newInstanceArgs($arguments);
         }
+
+        $arguments = $this->provider->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
 
         return call_user_func_array("{$this->getClass()}::{$this->getConstructor()}", $arguments);
     }
