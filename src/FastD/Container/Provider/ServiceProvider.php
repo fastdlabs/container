@@ -66,6 +66,15 @@ class ServiceProvider implements ProviderInterface
     }
 
     /**
+     * @param $name
+     * @return bool
+     */
+    public function hasService($name)
+    {
+        return isset($this->alias[$name]) || isset($this->services[$name]);
+    }
+
+    /**
      * @param       $name
      * @param array $arguments
      * @param bool  $flag
@@ -77,26 +86,16 @@ class ServiceProvider implements ProviderInterface
 
         $service = $this->services[$name];
 
-        if ($flag) {
-            return $service->newInstance();
-        }
-
-        if (!($service instanceof ServiceGenerator)) {
+        if (!$flag && !($service instanceof ServiceGenerator)) {
             return $service;
         }
+        $instance = $service->newInstance($arguments);
 
-        $this->services[$name] = $service->newInstance();
+        if (!$flag) {
+            $this->services[$name] = $instance;
+        }
 
-        return $this->services[$name];
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function hasService($name)
-    {
-        return isset($this->alias[$name]) || isset($this->services[$name]);
+        return $instance;
     }
 
     /**

@@ -15,7 +15,7 @@ namespace FastD\Container\Tests\Libs;
 
 class TestService 
 {
-    public static function single()
+    public static function single(TestService $service)
     {
         return new static();
     }

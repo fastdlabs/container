@@ -22,7 +22,9 @@ namespace FastD\Container\Provider\Args;
 class Extractor
 {
     public static function getParametersCount($object, $method)
-    {}
+    {
+
+    }
 
     /**
      * @param $object
