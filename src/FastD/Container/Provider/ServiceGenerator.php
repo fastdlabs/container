@@ -110,12 +110,12 @@ class ServiceGenerator
     public function newInstance()
     {
         if (null === $this->getConstructor()) {
-            return new $this->class;
+            return new $this->class();
         }
 
         $class = $this->getClass();
         $constructor = $this->getConstructor();
-        return $class::$constructor;
+        return $class::$constructor();
     }
 
     public function __clone()
