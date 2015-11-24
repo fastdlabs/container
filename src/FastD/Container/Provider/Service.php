@@ -98,6 +98,7 @@ class Service
     public function setClass($class)
     {
         if (is_object($class)) {
+            $this->instance = $class;
             $name = get_class($class);
             $this->setName($name);
             $this->class = $name;
