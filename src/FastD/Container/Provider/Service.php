@@ -33,7 +33,7 @@ class Service
     /**
      * @var string
      */
-    protected $constructor;
+    protected $constructor = '__construct';
 
     /**
      * @var Provider
@@ -159,7 +159,7 @@ class Service
      */
     public function getInstance(array $arguments = [])
     {
-        if (null === $this->getConstructor()) {
+        if (!method_exists($this->class, $this->getConstructor())) {
             return new $this->class;
         }
 
@@ -179,7 +179,7 @@ class Service
     {
         $this->name = null;
         $this->class = null;
-        $this->constructor = null;
+        $this->constructor = '__construct';
         return $this;
     }
 
