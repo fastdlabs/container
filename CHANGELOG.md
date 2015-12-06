@@ -3,3 +3,5 @@
 - 优化 ServiceProvider list
 - 优化参数提取器
 - 增加testing
+- 增加单例化方法
+- 修复注入方法

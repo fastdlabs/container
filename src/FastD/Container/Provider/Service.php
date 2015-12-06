@@ -197,7 +197,7 @@ class Service
             throw new \LogicException(sprintf('Method "%s" is not exists in Class "%s"', $method, $this->getClass()));
         }
 
-        $arguments = $this->getProvider()->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
+        $arguments = $this->getProvider()->extraArguments($this->getClass(), $method, $arguments);
 
         return call_user_func_array([$this->singleton(), $method], $arguments);
     }

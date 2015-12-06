@@ -52,7 +52,7 @@ class Extractor implements ExtraInterface
 
         $reflection = new \ReflectionMethod($object, $method);
 
-        if (0 >= $reflection->getNumberOfRequiredParameters()) {
+        if (0 >= $reflection->getNumberOfParameters()) {
             return $arguments;
         }
 
@@ -65,7 +65,7 @@ class Extractor implements ExtraInterface
                     $this->provider->setService($name, $name);
                 }
 
-                $args[$index] = $this->provider->getInstance($name);
+                $args[$index] = $this->provider->singleton($name);
             }
         }
 

@@ -39,10 +39,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $demo = $this->container->get('demo')->getInstance();
         $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService2', TestService::$ts2);
         $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService', $demo);
-        $this->assertTrue($this->container->get('demo')->testIoC());
-
         $demo4 = $this->container->singleton('demo5');
         $this->assertTrue($demo4->getService());
+        $this->assertTrue($this->container->get('demo')->testIoC());
     }
 
     public function testConstructArgs()
