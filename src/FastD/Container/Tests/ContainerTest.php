@@ -65,8 +65,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('FastD\Container\Tests\Libs\TestService', $demo->getName());
         $this->assertEquals('single', $demo->getConstructor());
         $this->assertEquals('FastD\Container\Tests\Libs\TestService', $demo->getClass());
-    }
+        echo get_class($demo);
+        echo $demo->demoArg('janhuang');
 
+    }
 
 
     public function testSingleton()

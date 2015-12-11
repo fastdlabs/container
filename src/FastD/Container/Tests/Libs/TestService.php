@@ -43,4 +43,9 @@ class TestService
     {
         return $this->name;
     }
+
+    public function demoArg($name)
+    {
+        return $name;
+    }
 }

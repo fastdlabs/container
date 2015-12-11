@@ -14,13 +14,37 @@
 
 namespace FastD\Container;
 
+/**
+ * Interface ContainerInterface
+ *
+ * @package FastD\Container
+ */
 interface ContainerInterface
 {
+    /**
+     * @param $name
+     * @param $class
+     * @return mixed
+     */
     public function set($name, $class);
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function get($name);
 
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
     public function instance($name, array $arguments = []);
 
+    /**
+     * @param       $name
+     * @param array $arguments
+     * @return mixed
+     */
     public function singleton($name, array $arguments = []);
 }
