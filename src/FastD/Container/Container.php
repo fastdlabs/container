@@ -25,6 +25,8 @@ class Container implements ContainerInterface
      */
     protected $services = [];
 
+    protected $alias = [];
+
     protected $serviceProperty;
 
     /**
@@ -32,23 +34,22 @@ class Container implements ContainerInterface
      */
     public function __construct(array $services = [])
     {
+        $this->serviceProperty = new Service(null);
+
         foreach ($services as $name => $service) {
             $this->set($name, $service);
         }
-
-        $this->serviceProperty = new Service(null);
     }
 
     /**
      * @param $name
-     * @param $service
+     * @param $class
      * @return $this
      */
-    public function set($name, $service)
+    public function set($name, $class)
     {
-        $service = clone $this->serviceProperty;
-
-        $this->services[is_integer($name) ? $service : $name] = new Service($service);
+        $this->services[$class] = $class;
+        $this->alias[is_integer($name) ? $class : $name] = $class;
 
         return $this;
     }
@@ -59,16 +60,39 @@ class Container implements ContainerInterface
      */
     public function has($name)
     {
-        return isset($this->services[$name]);
+        return isset($this->services[$name]) || isset($this->alias[$name]);
     }
 
     /**
-     * @param       $name
+     * @param $name
      * @return Service
+     * @throws \Exception
      */
     public function get($name)
     {
-        return $this->has($name) ? $this->services[$name] : false;
+        if (isset($this->alias[$name])) {
+            $name = $this->alias[$name];
+        }
+
+        if (!isset($this->services[$name])) {
+            throw new \Exception(sprintf('Service ["%s"] is not found.', $name));
+        }
+
+        $service = $this->services[$name];
+
+        if (is_string($service)) {
+            $property = clone $this->serviceProperty;
+
+            $property->setClass($service);
+            $property->setName($name);
+            $property->setContainer($this);
+
+            $service = $property;
+
+            unset($property);
+        }
+
+        return $service;
     }
 
     /**
@@ -78,9 +102,7 @@ class Container implements ContainerInterface
      */
     public function instance($name, array $arguments = [])
     {
-        $service = $this->get($name);
-
-        return new $service;
+        return $this->get($name)->instance($arguments);
     }
 
     /**
@@ -90,6 +112,6 @@ class Container implements ContainerInterface
      */
     public function singleton($name, array $arguments = [])
     {
-
+        return $this->get($name)->singleton($arguments);
     }
 }

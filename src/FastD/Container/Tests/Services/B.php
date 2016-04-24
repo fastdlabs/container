@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/11/24
- * Time: 下午6:13
+ * Date: 16/4/24
+ * Time: 下午11:50
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,12 +12,12 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Container\Tests\Libs;
+namespace FastD\Container\Tests\Services;
 
-class TestConstructor
+class B
 {
-    public function __construct()
+    public function __construct(A $a)
     {
-
+        echo $a->age;
     }
 }

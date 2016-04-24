@@ -16,7 +16,8 @@ namespace FastD\Container\Tests;
 
 use FastD\Container\Container;
 use FastD\Container\Service;
-use FastD\Container\Tests\Libs\TestService;
+use FastD\Container\Tests\Services\A;
+use FastD\Container\Tests\Services\B;
 
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,26 +26,53 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new Container([
-            'test' => TestService::class
+            'test' => A::class
         ]);
     }
 
     public function testService()
     {
-        $service = new Service(TestService::class);
+        $service = new Service(A::class);
 
-        $this->assertEquals(TestService::class, $service->getClass());
+        $this->assertEquals(A::class, $service->getClass());
 
-//        $this->assertEquals(null, $service->getConstructor());
+        $this->assertEquals(null, $service->getConstructor());
         $this->assertNull($service->getConstructor());
 
-        $this->assertEquals(TestService::class, $service->getName());
+        $this->assertEquals(A::class, $service->getName());
     }
 
-    public function testContainer()
+    public function testInstance()
     {
-        $service = new Service(TestService::class);
+        $service = new Service(A::class);
 
         $service->setContainer($this->container);
+
+        $instance = $service->instance();
+
+        $this->assertEquals($instance->age, 18);
+
+        $instance->age = 15;
+
+        $this->assertEquals($instance->age, 15);
+
+        $instance2 = $service->instance();
+
+        $this->assertEquals(18, $instance2->age);
+    }
+
+    public function testSingleton()
+    {
+        $service = new Service(A::class);
+
+        $instance = $service->singleton();
+
+        $this->assertEquals(18, $instance->age);
+
+        $instance->age = 15;
+
+        $instance2 = $service->singleton();
+
+        $this->assertEquals(15, $instance2->age);
     }
 }

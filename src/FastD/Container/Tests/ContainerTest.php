@@ -14,7 +14,8 @@
 namespace FastD\Container\Tests;
 
 use FastD\Container\Container;
-use FastD\Container\Tests\Libs\TestService;
+use FastD\Container\Tests\Services\A;
+use FastD\Container\Tests\Services\B;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,23 +26,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->container = new Container();
+        $this->container = new Container([
+            'a' => A::class,
+            'b' => B::class,
+        ]);
     }
 
     public function testSetGet()
     {
-        $this->container->set('test', TestService::class);
+        $this->assertTrue($this->container->has('a'));
+        $this->assertTrue($this->container->has(A::class));
 
-        $service = $this->container->get('test');
-
-        $this->assertEquals(TestService::class, $service->getClass());
-
-        $this->assertEquals(null, $service->getConstructor());
-
-        $this->assertEquals(TestService::class, $service->getName());
-
-//        $this->assertEquals(TestService::class, $this->container->get('test'));
-
-//        print_r($this->container->instance('test'));
+        $this->assertEquals(A::class, $this->container->get('a')->getClass());
+        $this->assertEquals(A::class, $this->container->get(A::class)->getClass());
+        $this->assertEquals(A::class, $this->container->get(A::class)->getName());
     }
 }

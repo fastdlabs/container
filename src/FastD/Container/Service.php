@@ -40,29 +40,10 @@ class Service extends ContainerAware
      */
     protected $instance;
 
-    /**
-     * Service constructor.
-     * @param $class
-     */
     public function __construct($class)
     {
         if (null !== $class) {
-            if (is_object($class)) {
-                $this->instance = $class;
-                $name = get_class($class);
-                $this->setName($name);
-                $this->setClass($name);
-            } else if (false !== strpos($class, '::')) {
-                list($name, $constructor) = explode('::', $class);
-                $this->setConstructor($constructor);
-                $this->setName($name);
-                $this->setClass($name);
-            } else {
-                $this->setName($class);
-                $this->setClass($class);
-            }
-
-            unset($class);
+            $this->setClass($class);
         }
     }
 
@@ -99,7 +80,22 @@ class Service extends ContainerAware
      */
     public function setClass($class)
     {
-        $this->class = $class;
+        if (is_object($class)) {
+            $this->instance = $class;
+            $name = get_class($class);
+            $this->setName($name);
+            $this->class = $name;
+        } else if (false !== strpos($class, '::')) {
+            list($name, $constructor) = explode('::', $class);
+            $this->setConstructor($constructor);
+            $this->setName($name);
+            $this->class = $name;
+        } else {
+            $this->setName($class);
+            $this->class = $class;
+        }
+
+        unset($class);
 
         return $this;
     }
@@ -135,7 +131,7 @@ class Service extends ContainerAware
             return $this->instance;
         }
 
-        $this->instance = $this->getInstance($arguments);
+        $this->instance = $this->instance($arguments);
 
         return $this->instance;
     }
@@ -144,36 +140,35 @@ class Service extends ContainerAware
      * @param array $arguments
      * @return mixed
      */
-    public function getInstance(array $arguments = [])
+    public function instance(array $arguments = [])
     {
         if (null === $this->getConstructor()) {
             $reflection = new \ReflectionClass($this->getClass());
 
             if (null !== $reflection->getConstructor()) {
-                $arguments = $this->getParameters($this->getClass(), $reflection->getConstructor()->getName(), $arguments);
+                $arguments = $this->getParameters($reflection->getConstructor()->getName(), $arguments);
             }
 
             return $reflection->newInstanceArgs($arguments);
         }
 
-        $arguments = $this->getParameters($this->getClass(), $this->getConstructor(), $arguments);
+        $arguments = $this->getParameters($this->getConstructor(), $arguments);
 
         return call_user_func_array("{$this->getClass()}::{$this->getConstructor()}", $arguments);
     }
 
     /**
-     * @param       $object
      * @param       $method
      * @param array $arguments
      * @return array
      */
-    public function getParameters($object, $method, array $arguments = [])
+    public function getParameters($method, array $arguments = [])
     {
         if (null === $method) {
             return $arguments;
         }
 
-        $reflection = new \ReflectionMethod($object, $method);
+        $reflection = new \ReflectionMethod($this->getClass(), $method);
 
         if (0 >= $reflection->getNumberOfParameters()) {
             return $arguments;
@@ -206,7 +201,7 @@ class Service extends ContainerAware
             throw new \LogicException(sprintf('Method "%s" is not exists in Class "%s"', $method, $this->getClass()));
         }
 
-        $arguments = $this->getParameters($this->getClass(), $method, $arguments);
+        $arguments = $this->getParameters($method, $arguments);
 
         return call_user_func_array([$this->singleton(), $method], $arguments);
     }
@@ -219,6 +214,7 @@ class Service extends ContainerAware
         $this->name = null;
         $this->class = null;
         $this->constructor = null;
+
         return $this;
     }
 }
