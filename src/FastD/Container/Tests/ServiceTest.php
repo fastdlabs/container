@@ -26,7 +26,8 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new Container([
-            'test' => A::class
+            'a' => A::class,
+            'b' => B::class
         ]);
     }
 
@@ -78,6 +79,12 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testParameters()
     {
+        $service = new Service(B::class);
 
+        $service->setContainer($this->container);
+
+        $parameters = $service->getParameters($service->getConstructor());
+
+        print_r($parameters);
     }
 }

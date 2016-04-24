@@ -40,6 +40,10 @@ class Service extends ContainerAware
      */
     protected $instance;
 
+    /**
+     * Service constructor.
+     * @param $class
+     */
     public function __construct($class)
     {
         if (null !== $class) {
@@ -164,10 +168,6 @@ class Service extends ContainerAware
      */
     public function getParameters($method, array $arguments = [])
     {
-        if (null === $method) {
-            return $arguments;
-        }
-
         $reflection = new \ReflectionMethod($this->getClass(), $method);
 
         if (0 >= $reflection->getNumberOfParameters()) {
