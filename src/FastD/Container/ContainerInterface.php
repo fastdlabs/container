@@ -23,14 +23,20 @@ interface ContainerInterface
 {
     /**
      * @param $name
+     * @return bool
+     */
+    public function has($name);
+
+    /**
+     * @param $name
      * @param $class
-     * @return mixed
+     * @return $this
      */
     public function set($name, $class);
 
     /**
      * @param $name
-     * @return mixed
+     * @return $this
      */
     public function get($name);
 

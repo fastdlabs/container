@@ -26,66 +26,22 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new Container();
-
-        $this->container->set('demo', 'FastD\\Container\\Tests\\Libs\\TestService::single');
-        $this->container->set('demo2', 'FastD\\Container\\Tests\\Libs\\TestService2');
-        $this->container->set('demo3', 'FastD\\Container\\Tests\\Libs\\TestConstructor');
-        $this->container->set('demo4', 'FastD\\Container\\Tests\\Libs\\TestConstructorArgs');
-        $this->container->set('demo5', 'FastD\\Container\\Tests\\Libs\\TestConstructIoC');
     }
 
-    public function testIoC()
+    public function testSetGet()
     {
-        $demo = $this->container->get('demo')->getInstance();
-        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService2', TestService::$ts2);
-        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestService', $demo);
-        $demo4 = $this->container->singleton('demo5');
-        $this->assertTrue($demo4->getService());
-        $this->assertTrue($this->container->get('demo')->testIoC());
-    }
+        $this->container->set('test', TestService::class);
 
-    public function testConstructArgs()
-    {
-        $demo = $this->container->get('demo4')->getInstance(['jan']);
-        $this->assertEquals('jan', $demo->name);
-    }
+        $service = $this->container->get('test');
 
-    public function testConstruct()
-    {
-        $demo = $this->container->get('demo3');
-        $this->assertInstanceOf('FastD\Container\Provider\Service', $demo);
-        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestConstructor', $demo->singleton());
-        $this->assertInstanceOf('FastD\Container\Tests\Libs\TestConstructor', $demo->getInstance());
-    }
+        $this->assertEquals(TestService::class, $service->getClass());
 
+        $this->assertEquals(null, $service->getConstructor());
 
-    public function testGetService()
-    {
-        $demo = $this->container->get('demo');
-        $this->assertEquals('FastD\Container\Tests\Libs\TestService', $demo->getName());
-        $this->assertEquals('single', $demo->getConstructor());
-        $this->assertEquals('FastD\Container\Tests\Libs\TestService', $demo->getClass());
-        echo get_class($demo);
-        echo $demo->demoArg('janhuang');
+        $this->assertEquals(TestService::class, $service->getName());
 
-    }
+//        $this->assertEquals(TestService::class, $this->container->get('test'));
 
-
-    public function testSingleton()
-    {
-        $demo = $this->container->get('demo')->getInstance();
-        $demo->setName('janhuang');
-        $this->assertEquals('janhuang', $demo->getName());
-
-        $demo2 = $this->container->get('demo')->getInstance();
-        $this->assertEquals(null, $demo2->getName());
-
-        $demo3 = $this->container->get('demo')->singleton();
-        $this->assertEquals(null, $demo3->getName());
-        $demo3->setName('demo3');
-        $this->assertEquals('demo3', $demo3->getName());
-
-        $demo4 = $this->container->get('demo')->singleton();
-        $this->assertEquals('demo3', $demo4->getName());
+//        print_r($this->container->instance('test'));
     }
 }

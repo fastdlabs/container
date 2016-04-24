@@ -1,8 +1,9 @@
-#FastD php simple framework Container Component
+# Object Container
 
-###Usage
+## Testing
 
 ```php
-composer require fastd/container version
 phpunit
 ```
+
+## License MIT

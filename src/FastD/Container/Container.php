@@ -13,9 +13,6 @@
 
 namespace FastD\Container;
 
-use FastD\Container\Provider\Provider;
-use FastD\Container\Provider\Service;
-
 /**
  * Class Container
  *
@@ -24,16 +21,22 @@ use FastD\Container\Provider\Service;
 class Container implements ContainerInterface
 {
     /**
-     * @var Provider
+     * @var Service[]
      */
-    protected $provider;
+    protected $services = [];
+
+    protected $serviceProperty;
 
     /**
      * @param array $services
      */
-    public function __construct(array $services = array())
+    public function __construct(array $services = [])
     {
-        $this->provider = new Provider($services);
+        foreach ($services as $name => $service) {
+            $this->set($name, $service);
+        }
+
+        $this->serviceProperty = new Service(null);
     }
 
     /**
@@ -43,9 +46,20 @@ class Container implements ContainerInterface
      */
     public function set($name, $service)
     {
-        $this->provider->setService($name, $service);
+        $service = clone $this->serviceProperty;
+
+        $this->services[is_integer($name) ? $service : $name] = new Service($service);
 
         return $this;
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->services[$name]);
     }
 
     /**
@@ -54,7 +68,7 @@ class Container implements ContainerInterface
      */
     public function get($name)
     {
-        return $this->provider->getService($name);
+        return $this->has($name) ? $this->services[$name] : false;
     }
 
     /**
@@ -64,7 +78,9 @@ class Container implements ContainerInterface
      */
     public function instance($name, array $arguments = [])
     {
-        return $this->provider->getInstance($name, $arguments);
+        $service = $this->get($name);
+
+        return new $service;
     }
 
     /**
@@ -74,6 +90,6 @@ class Container implements ContainerInterface
      */
     public function singleton($name, array $arguments = [])
     {
-        return $this->provider->singleton($name, $arguments);
+
     }
 }

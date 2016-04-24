@@ -11,14 +11,14 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Container\Provider;
+namespace FastD\Container;
 
 /**
  * Class Service
  *
- * @package FastD\Container\Provider
+ * @package FastD\Container
  */
-class Service
+class Service extends ContainerAware
 {
     /**
      * @var string
@@ -36,32 +36,34 @@ class Service
     protected $constructor;
 
     /**
-     * @var Provider
-     */
-    protected $provider;
-
-    /**
      * @var mixed
      */
     protected $instance;
 
     /**
-     * @return Provider
+     * Service constructor.
+     * @param $class
      */
-    public function getProvider()
+    public function __construct($class)
     {
-        return $this->provider;
-    }
+        if (null !== $class) {
+            if (is_object($class)) {
+                $this->instance = $class;
+                $name = get_class($class);
+                $this->setName($name);
+                $this->setClass($name);
+            } else if (false !== strpos($class, '::')) {
+                list($name, $constructor) = explode('::', $class);
+                $this->setConstructor($constructor);
+                $this->setName($name);
+                $this->setClass($name);
+            } else {
+                $this->setName($class);
+                $this->setClass($class);
+            }
 
-    /**
-     * @param ProviderInterface $provider
-     * @return $this
-     */
-    public function setProvider(ProviderInterface $provider)
-    {
-        $this->provider = $provider;
-
-        return $this;
+            unset($class);
+        }
     }
 
     /**
@@ -97,23 +99,7 @@ class Service
      */
     public function setClass($class)
     {
-        if (is_object($class)) {
-            $this->instance = $class;
-            $name = get_class($class);
-            $this->setName($name);
-            $this->class = $name;
-            return $this;
-        }
-
-        if (false !== strpos($class, '::')) {
-            list($name, $constructor) = explode('::', $class);
-            $this->setConstructor($constructor);
-            $this->setName($name);
-            $this->class = $name;
-        } else {
-            $this->setName($class);
-            $this->class = $class;
-        }
+        $this->class = $class;
 
         return $this;
     }
@@ -164,26 +150,49 @@ class Service
             $reflection = new \ReflectionClass($this->getClass());
 
             if (null !== $reflection->getConstructor()) {
-                $arguments = $this->provider->extraArguments($this->getClass(), $reflection->getConstructor()->getName(), $arguments);
+                $arguments = $this->getParameters($this->getClass(), $reflection->getConstructor()->getName(), $arguments);
             }
 
             return $reflection->newInstanceArgs($arguments);
         }
 
-        $arguments = $this->provider->extraArguments($this->getClass(), $this->getConstructor(), $arguments);
+        $arguments = $this->getParameters($this->getClass(), $this->getConstructor(), $arguments);
 
         return call_user_func_array("{$this->getClass()}::{$this->getConstructor()}", $arguments);
     }
 
     /**
-     * @return $this
+     * @param       $object
+     * @param       $method
+     * @param array $arguments
+     * @return array
      */
-    public function __clone()
+    public function getParameters($object, $method, array $arguments = [])
     {
-        $this->name = null;
-        $this->class = null;
-        $this->constructor = null;
-        return $this;
+        if (null === $method) {
+            return $arguments;
+        }
+
+        $reflection = new \ReflectionMethod($object, $method);
+
+        if (0 >= $reflection->getNumberOfParameters()) {
+            return $arguments;
+        }
+
+        $args = array();
+
+        foreach ($reflection->getParameters() as $index => $parameter) {;
+            if (($class = $parameter->getClass()) instanceof \ReflectionClass) {
+                $name = $class->getName();
+                if (!$this->getContainer()->has($name)) {
+                    $this->getContainer()->set($name, $name);
+                }
+
+                $args[$index] = $this->getContainer()->singleton($name);
+            }
+        }
+
+        return array_merge($args, $arguments);
     }
 
     /**
@@ -197,8 +206,19 @@ class Service
             throw new \LogicException(sprintf('Method "%s" is not exists in Class "%s"', $method, $this->getClass()));
         }
 
-        $arguments = $this->getProvider()->extraArguments($this->getClass(), $method, $arguments);
+        $arguments = $this->getParameters($this->getClass(), $method, $arguments);
 
         return call_user_func_array([$this->singleton(), $method], $arguments);
+    }
+
+    /**
+     * @return $this
+     */
+    public function __clone()
+    {
+        $this->name = null;
+        $this->class = null;
+        $this->constructor = null;
+        return $this;
     }
 }
