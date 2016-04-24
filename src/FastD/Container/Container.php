@@ -25,8 +25,14 @@ class Container implements ContainerInterface
      */
     protected $services = [];
 
+    /**
+     * @var array
+     */
     protected $alias = [];
 
+    /**
+     * @var Service
+     */
     protected $serviceProperty;
 
     /**
@@ -39,6 +45,14 @@ class Container implements ContainerInterface
         foreach ($services as $name => $service) {
             $this->set($name, $service);
         }
+    }
+
+    /**
+     * @return Service[]
+     */
+    public function all()
+    {
+        return $this->services;
     }
 
     /**
@@ -81,11 +95,15 @@ class Container implements ContainerInterface
         $service = $this->services[$name];
 
         if (is_string($service)) {
+
+            $alias = array_search($name, $this->alias);
+
             $property = clone $this->serviceProperty;
 
             $property->setClass($service);
-            $property->setName($name);
+            $property->setName($alias);
             $property->setContainer($this);
+            $this->services[$property->getClass()] = $property;
 
             $service = $property;
 

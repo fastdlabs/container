@@ -75,4 +75,9 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(15, $instance2->age);
     }
+
+    public function testParameters()
+    {
+
+    }
 }

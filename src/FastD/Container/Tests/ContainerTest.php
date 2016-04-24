@@ -37,8 +37,21 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->container->has('a'));
         $this->assertTrue($this->container->has(A::class));
 
+        $this->assertEquals([
+            A::class => A::class,
+            B::class => B::class,
+        ], $this->container->all());
+
+        $this->assertEquals('a', $this->container->get(A::class)->getName());
+        $this->assertEquals('a', $this->container->get('a')->getName());
         $this->assertEquals(A::class, $this->container->get('a')->getClass());
         $this->assertEquals(A::class, $this->container->get(A::class)->getClass());
-        $this->assertEquals(A::class, $this->container->get(A::class)->getName());
+        $this->assertEquals('a', $this->container->get('a')->getName());
+        $this->assertEquals('a', $this->container->get(A::class)->getName());
+
+        $this->assertEquals([
+            A::class => $this->container->get(A::class),
+            B::class => B::class,
+        ], $this->container->all());
     }
 }
