@@ -77,6 +77,17 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(15, $instance2->age);
     }
 
+    public function testProperty()
+    {
+        $service = new Service(B::class);
+
+        $this->assertEquals('__construct', $service->getConstructor());
+
+        $service = new Service(A::class);
+
+        $this->assertNull($service->getConstructor());
+    }
+
     public function testParameters()
     {
         $service = new Service(B::class);
@@ -85,6 +96,12 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
 
         $parameters = $service->getParameters($service->getConstructor());
 
-        print_r($parameters);
+        $this->assertEquals([
+            new A()
+        ], $parameters);
+
+        $service = new Service(A::class);
+
+        $this->assertEquals([], $service->getParameters($service->getConstructor()));
     }
 }

@@ -89,14 +89,25 @@ class Service extends ContainerAware
             $name = get_class($class);
             $this->setName($name);
             $this->class = $name;
+            $reflection = new \ReflectionClass($class);
+            if (null !== $reflection->getConstructor()) {
+                $this->setConstructor($reflection->getConstructor()->getName());
+            }
+            unset($reflection);
         } else if (false !== strpos($class, '::')) {
             list($name, $constructor) = explode('::', $class);
             $this->setConstructor($constructor);
             $this->setName($name);
             $this->class = $name;
+            unset($name, $constructor);
         } else {
             $this->setName($class);
             $this->class = $class;
+            $reflection = new \ReflectionClass($class);
+            if (null !== $reflection->getConstructor()) {
+                $this->setConstructor($reflection->getConstructor()->getName());
+            }
+            unset($reflection);
         }
 
         unset($class);
@@ -168,6 +179,10 @@ class Service extends ContainerAware
      */
     public function getParameters($method, array $arguments = [])
     {
+        if (empty($method)) {
+            return [];
+        }
+
         $reflection = new \ReflectionMethod($this->getClass(), $method);
 
         if (0 >= $reflection->getNumberOfParameters()) {
