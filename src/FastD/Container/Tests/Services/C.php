@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 16/4/24
- * Time: 下午11:50
+ * Date: 16/4/25
+ * Time: 下午8:40
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -14,16 +14,12 @@
 
 namespace FastD\Container\Tests\Services;
 
-class B
+class C
 {
-    public $a;
+    public static $inc = 0;
 
-    public $age;
-
-    public function __construct(A $a, $age)
+    public static function instance()
     {
-        $this->a = $a;
-
-        $this->age = $age;
+        self::$inc = 1;
     }
 }

@@ -18,6 +18,8 @@ use FastD\Container\Container;
 use FastD\Container\Service;
 use FastD\Container\Tests\Services\A;
 use FastD\Container\Tests\Services\B;
+use FastD\Container\Tests\Services\C;
+use FastD\Container\Tests\Services\D;
 
 class ServiceTest extends \PHPUnit_Framework_TestCase
 {
@@ -60,6 +62,16 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $instance2 = $service->instance();
 
         $this->assertEquals(18, $instance2->age);
+
+        $service = new Service(B::class);
+
+        $service->setContainer($this->container);
+
+        $instance = $service->instance([10]);
+
+        $this->assertEquals($instance->a, new A());
+
+        $this->assertEquals(10, $instance->age);
     }
 
     public function testSingleton()
@@ -75,6 +87,18 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $instance2 = $service->singleton();
 
         $this->assertEquals(15, $instance2->age);
+
+        $service = new Service(C::class . '::instance');
+
+        $service->instance();
+
+        $this->assertEquals(1, C::$inc);
+
+        $service = new Service(D::class . '::instance');
+
+        $service->instance([10]);
+
+        $this->assertEquals(10, D::$inc);
     }
 
     public function testProperty()
@@ -103,5 +127,16 @@ class ServiceTest extends \PHPUnit_Framework_TestCase
         $service = new Service(A::class);
 
         $this->assertEquals([], $service->getParameters($service->getConstructor()));
+
+        $service = new Service(B::class);
+
+        $service->setContainer($this->container);
+
+        $parameters = $service->getParameters($service->getConstructor(), [10]);
+
+        $this->assertEquals([
+            new A(),
+            10
+        ], $parameters);
     }
 }

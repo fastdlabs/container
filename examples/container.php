@@ -14,8 +14,19 @@
 
 include __DIR__ . '/../vendor/autoload.php';
 
-$container = new \FastD\Container\Container();
+use FastD\Container\Container;
+use FastD\Container\Tests\Services\A;
+use FastD\Container\Tests\Services\B;
+use FastD\Container\Tests\Services\C;
+use FastD\Container\Tests\Services\D;
 
-$container->set('test', \FastD\Container\Tests\Libs\TestService::class);
+$container = new Container([
+    A::class, B::class, C::class, D::class,
+    'a' => A::class,
+]);
 
-print_r($container);
+$a = $container->get('a');
+
+$b = $container->get(B::class);
+
+$instance = $b->instance([10]);

@@ -137,47 +137,44 @@ class Service extends ContainerAware
     /**
      * Get singleton service object.
      *
-     * @param array $arguments
+     * @param array $parameters
      * @return mixed
      */
-    public function singleton(array $arguments = [])
+    public function singleton(array $parameters = [])
     {
-        if (null !== $this->instance) {
-            return $this->instance;
+        if (null === $this->instance) {
+            $this->instance = $this->instance($parameters);
         }
-
-        $this->instance = $this->instance($arguments);
 
         return $this->instance;
     }
 
     /**
-     * @param array $arguments
+     * @param array $parameters
      * @return mixed
      */
-    public function instance(array $arguments = [])
+    public function instance(array $parameters = [])
     {
-        if (null === $this->getConstructor()) {
+        if (null === $this->getConstructor() || '__construct' === $this->getConstructor()) {
+
             $reflection = new \ReflectionClass($this->getClass());
 
-            if (null !== $reflection->getConstructor()) {
-                $arguments = $this->getParameters($reflection->getConstructor()->getName(), $arguments);
-            }
+            $parameters = $this->getParameters($this->getConstructor(), $parameters);
 
-            return $reflection->newInstanceArgs($arguments);
+            return $reflection->newInstanceArgs($parameters);
         }
 
-        $arguments = $this->getParameters($this->getConstructor(), $arguments);
+        $parameters = $this->getParameters($this->getConstructor(), $parameters);
 
-        return call_user_func_array("{$this->getClass()}::{$this->getConstructor()}", $arguments);
+        return call_user_func_array("{$this->getClass()}::{$this->getConstructor()}", $parameters);
     }
 
     /**
      * @param       $method
-     * @param array $arguments
+     * @param array $parameters
      * @return array
      */
-    public function getParameters($method, array $arguments = [])
+    public function getParameters($method, array $parameters = [])
     {
         if (empty($method)) {
             return [];
@@ -186,7 +183,8 @@ class Service extends ContainerAware
         $reflection = new \ReflectionMethod($this->getClass(), $method);
 
         if (0 >= $reflection->getNumberOfParameters()) {
-            return $arguments;
+            unset($reflection);
+            return $parameters;
         }
 
         $args = array();
@@ -201,24 +199,25 @@ class Service extends ContainerAware
                 $args[$index] = $this->getContainer()->singleton($name);
             }
         }
+        unset($reflection);
 
-        return array_merge($args, $arguments);
+        return array_merge($args, $parameters);
     }
 
     /**
      * @param       $method
-     * @param array $arguments
+     * @param array $parameters
      * @return mixed
      */
-    public function __call($method, array $arguments = [])
+    public function __call($method, array $parameters = [])
     {
         if (!method_exists($this->getClass(), $method)) {
             throw new \LogicException(sprintf('Method "%s" is not exists in Class "%s"', $method, $this->getClass()));
         }
 
-        $arguments = $this->getParameters($method, $arguments);
+        $parameters = $this->getParameters($method, $parameters);
 
-        return call_user_func_array([$this->singleton(), $method], $arguments);
+        return call_user_func_array([$this->singleton(), $method], $parameters);
     }
 
     /**
