@@ -53,5 +53,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
             A::class => $this->container->get(A::class),
             B::class => B::class,
         ], $this->container->all());
+
+        $this->container->set('aa', new A());
+
+        $this->assertEquals(18, $this->container->get('aa')->singleton()->age);
     }
 }

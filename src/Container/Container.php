@@ -62,7 +62,14 @@ class Container implements ContainerInterface
      */
     public function set($name, $class)
     {
-        $this->services[$class] = $class;
+        if (is_object($class)) {
+            $object = $class;
+            $class = get_class($object);
+            $this->services[$class] = new Service($object);
+        } else {
+            $this->services[$class] = $class;
+        }
+
         $this->alias[is_integer($name) ? $class : $name] = $class;
 
         return $this;
