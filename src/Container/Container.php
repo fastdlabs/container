@@ -121,6 +121,14 @@ class Container implements ContainerInterface
     }
 
     /**
+     * @return array
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
      * @param       $name
      * @param array $arguments
      * @return mixed
