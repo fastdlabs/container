@@ -41,6 +41,11 @@ interface ContainerInterface
     public function get($name);
 
     /**
+     * @return Service[]
+     */
+    public function all();
+
+    /**
      * @param       $name
      * @param array $arguments
      * @return mixed
