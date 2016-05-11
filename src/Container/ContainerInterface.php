@@ -22,6 +22,12 @@ namespace FastD\Container;
 interface ContainerInterface
 {
     /**
+     * @param array $services
+     * @return $this
+     */
+    public function init(array $services);
+
+    /**
      * @param $name
      * @return bool
      */
@@ -44,6 +50,16 @@ interface ContainerInterface
      * @return Service[]
      */
     public function all();
+
+    /**
+     * @return array
+     */
+    public function getAlias();
+
+    /**
+     * @return void
+     */
+    public function reset();
 
     /**
      * @param       $name

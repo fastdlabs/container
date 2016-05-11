@@ -30,6 +30,8 @@ class Container implements ContainerInterface
      */
     protected $alias = [];
 
+    protected $init = [];
+
     /**
      * @var Service
      */
@@ -42,9 +44,7 @@ class Container implements ContainerInterface
     {
         $this->serviceProperty = new Service(null);
 
-        foreach ($services as $name => $service) {
-            $this->set($name, $service);
-        }
+        $this->init($services);
     }
 
     /**
@@ -146,5 +146,42 @@ class Container implements ContainerInterface
     public function singleton($name, array $arguments = [])
     {
         return $this->get($name)->singleton($arguments);
+    }
+
+    /**
+     * @param array $services
+     * @return $this
+     */
+    public function init(array $services)
+    {
+        $this->init = $services;
+
+        foreach ($services as $name => $service) {
+            $this->set($name, $service);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function reset()
+    {
+        $init = $this->init;
+
+        $this->init = [];
+
+        foreach ($this->services as $name => $value) {
+            unset($this->services[$name]);
+        }
+
+        $this->services = [];
+
+        foreach ($this->alias as $name => $value) {
+            unset($this->alias[$name]);
+        }
+
+        $this->services = [];
+
+        $this->init($init);
     }
 }

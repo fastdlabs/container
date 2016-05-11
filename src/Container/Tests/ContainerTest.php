@@ -16,6 +16,7 @@ namespace FastD\Container\Tests;
 use FastD\Container\Container;
 use FastD\Container\Tests\Services\A;
 use FastD\Container\Tests\Services\B;
+use FastD\Container\Tests\Services\C;
 
 class ContainerTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,5 +58,28 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set('aa', new A());
 
         $this->assertEquals(18, $this->container->get('aa')->singleton()->age);
+    }
+
+    public function testResetAndInit()
+    {
+        $this->assertEquals([
+            A::class => A::class,
+            B::class => B::class,
+        ], $this->container->all());
+
+        $this->container->set('c', C::class);
+
+        $this->assertEquals([
+            A::class => A::class,
+            B::class => B::class,
+            C::class => C::class
+        ], $this->container->all());
+
+        $this->container->reset();
+
+        $this->assertEquals([
+            A::class => A::class,
+            B::class => B::class,
+        ], $this->container->all());
     }
 }
