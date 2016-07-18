@@ -18,8 +18,10 @@ namespace FastD\Container;
  *
  * @package FastD\Container
  */
-class Service extends ContainerAware
+class Service
 {
+    use ContainerAware;
+
     /**
      * @var string
      */

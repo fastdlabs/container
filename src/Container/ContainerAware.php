@@ -19,7 +19,29 @@ namespace FastD\Container;
  *
  * @package FastD\Container
  */
-abstract class ContainerAware
+trait ContainerAware
 {
-    use  Aware;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @param ContainerInterface $containerInterface
+     * @return $this
+     */
+    public function setContainer(ContainerInterface $containerInterface)
+    {
+        $this->container = $containerInterface;
+
+        return $this;
+    }
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 }

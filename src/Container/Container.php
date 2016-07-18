@@ -30,6 +30,9 @@ class Container implements ContainerInterface
      */
     protected $alias = [];
 
+    /**
+     * @var array
+     */
     protected $init = [];
 
     /**
