@@ -1,6 +1,6 @@
 {
     "name": "fastd/container",
-    "description": "FastD container component",
+    "description": "FastD Container",
     "type": "library",
     "keywords": ["Container", "FastD"],
     "license": "MIT",
@@ -20,11 +20,6 @@
     "autoload": {
         "psr-4": {
             "FastD\\": "src"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0.x-dev"
         }
     }
 }
