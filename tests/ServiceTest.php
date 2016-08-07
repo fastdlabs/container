@@ -12,21 +12,20 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Container\Tests;
-
 use FastD\Container\Container;
 use FastD\Container\Service;
-use FastD\Container\Tests\Services\A;
-use FastD\Container\Tests\Services\B;
-use FastD\Container\Tests\Services\C;
-use FastD\Container\Tests\Services\D;
 
-class ServiceTest extends \PHPUnit_Framework_TestCase
+class ServiceTest extends PHPUnit_Framework_TestCase
 {
     protected $container;
 
     public function setUp()
     {
+        include_once __DIR__ . '/Services/A.php';
+        include_once __DIR__ . '/Services/B.php';
+        include_once __DIR__ . '/Services/C.php';
+        include_once __DIR__ . '/Services/D.php';
+
         $this->container = new Container([
             'a' => A::class,
             'b' => B::class

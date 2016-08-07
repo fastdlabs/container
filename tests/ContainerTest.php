@@ -11,14 +11,9 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Container\Tests;
-
 use FastD\Container\Container;
-use FastD\Container\Tests\Services\A;
-use FastD\Container\Tests\Services\B;
-use FastD\Container\Tests\Services\C;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var Container
@@ -27,6 +22,11 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        include_once __DIR__ . '/Services/A.php';
+        include_once __DIR__ . '/Services/B.php';
+        include_once __DIR__ . '/Services/C.php';
+        include_once __DIR__ . '/Services/D.php';
+
         $this->container = new Container([
             'a' => A::class,
             'b' => B::class,
