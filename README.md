@@ -12,9 +12,7 @@
 ## Composer 
 
 ```json
-{
-    "fastd/container": "2.0.x-dev"
-}
+composer require "fastd/container:3.0.x-dev" -vvv
 ```
 
 ## 使用
