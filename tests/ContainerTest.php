@@ -34,8 +34,6 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         $container->add('a', new A());
 
-        $this->assertInstanceOf(A::class, $container->get('a'));
-
         print_r($container);
     }
 }

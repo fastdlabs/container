@@ -9,15 +9,18 @@
 
 namespace FastD\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class Container
  *
  * @package FastD\Container
  */
-class Container implements ContainerInterface, FactoryInterface
+class Container implements ContainerInterface
 {
+    /**
+     * @var Injection[]
+     */
     protected $services = [];
 
     /**
@@ -25,24 +28,43 @@ class Container implements ContainerInterface, FactoryInterface
      */
     protected $map = [];
 
+    /**
+     * @param $name
+     * @param $service
+     * @return Injection
+     */
     public function add($name, $service)
     {
         if (is_object($service)) {
             $this->map[get_class($service)] = $name;
         }
 
-        $this->services[$name] = $service;
+        $injection = new Injection($service);
 
-        return $this;
+        $this->services[$name] = new $injection;
+
+        return $injection;
     }
 
+    /**
+     * @param string $name
+     * @return bool|Injection
+     */
     public function get($name)
     {
         $name = $this->findService($name);
 
+        if (false === $name || !isset($this->services[$name])) {
+
+        }
+
         return isset($this->services[$name]) ? $this->services[$name] : false;
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function has($name)
     {
         $name = $this->findService($name);
@@ -50,18 +72,12 @@ class Container implements ContainerInterface, FactoryInterface
         return isset($this->services[$name]) ? true : false;
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     public function findService($name)
     {
         return isset($this->map[$name]) ? $this->map[$name] : $name;
-    }
-
-    public function singleton($name, array $arguments = [])
-    {
-        return $this->get($name)->singleton($arguments);
-    }
-
-    public function make($name, array $arguments = [])
-    {
-        // TODO: Implement make() method.
     }
 }

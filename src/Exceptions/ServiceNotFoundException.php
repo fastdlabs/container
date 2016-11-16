@@ -7,9 +7,11 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Container;
+namespace FastD\Container\Exceptions;
 
-interface ServiceProviderInterface
+use Psr\Container\Exception\NotFoundException;
+
+class ServiceNotFoundException implements NotFoundException
 {
 
 }

@@ -17,9 +17,8 @@ namespace FastD\Container;
 interface FactoryInterface
 {
     /**
-     * @param $name
      * @param array $arguments
      * @return mixed
      */
-    public function make($name, array $arguments = []);
+    public function make(array $arguments = []);
 }
