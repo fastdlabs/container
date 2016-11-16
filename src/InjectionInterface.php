@@ -1,0 +1,21 @@
+<?php
+/**
+ * @author    jan huang <bboyjanhuang@gmail.com>
+ * @copyright 2016
+ *
+ * @link      https://www.github.com/janhuang
+ * @link      http://www.fast-d.cn/
+ */
+
+namespace FastD\Container;
+
+interface InjectionInterface
+{
+    public function injectOn($instance);
+
+    public function withMethod($method);
+
+    public function withStatic($method);
+
+    public function withArguments(array $arguments);
+}

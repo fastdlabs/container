@@ -16,7 +16,7 @@ use ReflectionClass;
  *
  * @package FastD\Container
  */
-class Injection implements FactoryInterface
+class Injection implements FactoryInterface, InjectionInterface
 {
     /**
      * @var mixed
