@@ -4,7 +4,7 @@
  * User: janhuang
  * Date: 15/3/11
  * Time: 下午2:38
- * Github: https://www.github.com/janhuang 
+ * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
  * Blog: http://segmentfault.com/blog/janhuang
@@ -26,60 +26,16 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         include_once __DIR__ . '/Services/B.php';
         include_once __DIR__ . '/Services/C.php';
         include_once __DIR__ . '/Services/D.php';
-
-        $this->container = new Container([
-            'a' => A::class,
-            'b' => B::class,
-        ]);
     }
 
     public function testSetGet()
     {
-        $this->assertTrue($this->container->has('a'));
-        $this->assertTrue($this->container->has(A::class));
+        $container = new Container();
 
-        $this->assertEquals([
-            A::class => A::class,
-            B::class => B::class,
-        ], $this->container->all());
+        $container->add('a', new A());
 
-        $this->assertEquals('a', $this->container->get(A::class)->getName());
-        $this->assertEquals('a', $this->container->get('a')->getName());
-        $this->assertEquals(A::class, $this->container->get('a')->getClass());
-        $this->assertEquals(A::class, $this->container->get(A::class)->getClass());
-        $this->assertEquals('a', $this->container->get('a')->getName());
-        $this->assertEquals('a', $this->container->get(A::class)->getName());
+        $this->assertInstanceOf(A::class, $container->get('a'));
 
-        $this->assertEquals([
-            A::class => $this->container->get(A::class),
-            B::class => B::class,
-        ], $this->container->all());
-
-        $this->container->set('aa', new A());
-
-        $this->assertEquals(18, $this->container->get('aa')->singleton()->age);
-    }
-
-    public function testResetAndInit()
-    {
-        $this->assertEquals([
-            A::class => A::class,
-            B::class => B::class,
-        ], $this->container->all());
-
-        $this->container->set('c', C::class);
-
-        $this->assertEquals([
-            A::class => A::class,
-            B::class => B::class,
-            C::class => C::class
-        ], $this->container->all());
-
-        $this->container->reset();
-
-        $this->assertEquals([
-            A::class => A::class,
-            B::class => B::class,
-        ], $this->container->all());
+        print_r($container);
     }
 }
