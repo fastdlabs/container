@@ -56,7 +56,7 @@ class Container implements ContainerInterface
         $name = $this->findService($name);
 
         if (false === $name || !isset($this->services[$name])) {
-            throw new ServiceNotFoundException(sprintf('Service %s not found', $name));
+            throw new ServiceNotFoundException($name);
         }
 
         return isset($this->services[$name]) ? $this->services[$name]->make() : false;
