@@ -18,6 +18,8 @@ class ReflectInjection extends Injection
 
     public function make(array $arguments = [])
     {
+        $this->reflection($this->method);
+
         return parent::make($arguments);
     }
 }

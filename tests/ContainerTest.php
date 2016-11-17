@@ -22,18 +22,25 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        include_once __DIR__ . '/Services/A.php';
-        include_once __DIR__ . '/Services/B.php';
-        include_once __DIR__ . '/Services/C.php';
-        include_once __DIR__ . '/Services/D.php';
+        include_once __DIR__ . '/Services/ConstructorInjection.php';
+        include_once __DIR__ . '/Services/MethodInjection.php';
+        include_once __DIR__ . '/Services/StaticInjection.php';
     }
 
     public function testSetGet()
     {
         $container = new Container();
 
-        $container->add('a', new A());
+        $container
+            ->add('method', new MethodInjection())
+            ->withMethod('now')
+            ->withArguments([
+                new DateTime(),
+            ])
+        ;
 
-        print_r($container);
+        $methodInjection = $container->get('method');
+
+        $this->assertEquals($methodInjection->date, (new DateTime())->format(DateTime::W3C));
     }
 }

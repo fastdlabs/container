@@ -54,4 +54,9 @@ class InjectionTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(StaticInjection::$date, (new DateTime())->format(DateTime::W3C));
     }
+
+    public function testClosureInjection()
+    {
+        
+    }
 }

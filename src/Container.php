@@ -9,6 +9,7 @@
 
 namespace FastD\Container;
 
+use FastD\Container\Exceptions\ServiceNotFoundException;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -41,7 +42,7 @@ class Container implements ContainerInterface
 
         $injection = new Injection($service);
 
-        $this->services[$name] = new $injection;
+        $this->services[$name] = $injection;
 
         return $injection;
     }
@@ -55,10 +56,10 @@ class Container implements ContainerInterface
         $name = $this->findService($name);
 
         if (false === $name || !isset($this->services[$name])) {
-
+            throw new ServiceNotFoundException(sprintf('Service %s not found', $name));
         }
 
-        return isset($this->services[$name]) ? $this->services[$name] : false;
+        return isset($this->services[$name]) ? $this->services[$name]->make() : false;
     }
 
     /**

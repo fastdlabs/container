@@ -10,8 +10,9 @@
 namespace FastD\Container\Exceptions;
 
 use Psr\Container\Exception\NotFoundException;
+use RuntimeException;
 
-class ServiceNotFoundException implements NotFoundException
+class ServiceNotFoundException extends RuntimeException  implements NotFoundException
 {
 
 }
