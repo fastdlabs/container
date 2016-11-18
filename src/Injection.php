@@ -24,6 +24,11 @@ class Injection implements FactoryInterface, InjectionInterface
     protected $instance;
 
     /**
+     * @var mixed
+     */
+    protected $obj;
+
+    /**
      * @var string
      */
     protected $method;
@@ -51,12 +56,12 @@ class Injection implements FactoryInterface, InjectionInterface
     }
 
     /**
-     * @param $instance
+     * @param $service
      * @return $this
      */
-    public function injectOn($instance)
+    public function injectOn($service)
     {
-        $this->instance = $instance;
+        $this->obj = $service;
 
         return $this;
     }
@@ -106,6 +111,19 @@ class Injection implements FactoryInterface, InjectionInterface
 
     /**
      * @param array $arguments
+     * @return object
+     */
+    public function getInstance(array $arguments = [])
+    {
+        if (null === $this->instance) {
+            $this->instance = (new ReflectionClass($this->obj))->newInstanceArgs($arguments);
+        }
+
+        return $this->instance;
+    }
+
+    /**
+     * @param array $arguments
      * @return mixed
      */
     public function make(array $arguments = [])
@@ -113,17 +131,17 @@ class Injection implements FactoryInterface, InjectionInterface
         $arguments = array_merge($this->arguments, $arguments);
 
         if ($this->isStatic) {
-            return call_user_func_array($this->instance . '::' . $this->method, $arguments);
+            return call_user_func_array($this->obj . '::' . $this->method, $arguments);
         }
 
         if ('__construct' === $this->method) {
-            return (new ReflectionClass($this->instance))->newInstanceArgs($arguments);
+            return $this->getInstance($arguments);
         }
 
         $obj = $this->instance;
 
         if (!is_object($obj)) {
-            $obj = new $obj;
+            $obj = new $this->obj;
         }
 
         call_user_func_array([$obj, $this->method], $arguments);
