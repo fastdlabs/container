@@ -22,6 +22,13 @@ class ReflectInjectionTest extends PHPUnit_Framework_TestCase
     {
         $injection = new ReflectInjection();
 
-        $injection->injectOn(Reflect::class);
+        $injection
+            ->injectOn(Reflect::class)
+            ->withConstruct()
+        ;
+
+        $obj = $injection->make();
+
+        $this->assertEquals($obj->now(), (new DateTime())->format(DateTime::W3C));
     }
 }

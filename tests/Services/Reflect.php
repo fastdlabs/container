@@ -9,5 +9,17 @@
  */
 class Reflect
 {
+    protected $methodInjection;
 
+    public function __construct(MethodInjection $injection)
+    {
+        $this->methodInjection = $injection;
+    }
+
+    public function now()
+    {
+        $this->methodInjection->now(new DateTime());
+
+        return $this->methodInjection->date;
+    }
 }
