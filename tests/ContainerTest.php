@@ -27,20 +27,36 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         include_once __DIR__ . '/Services/StaticInjection.php';
     }
 
+    public function testContainerConstructInjection()
+    {
+        $container = new Container();
+
+        $container
+            ->add('date', ConstructorInjection::class)
+            ->withConstruct()
+            ->withArguments([
+                new DateTime(),
+            ]);
+
+        $date = $container->get('date');
+
+        $this->assertEquals($date->date, (new DateTime())->format(DateTime::W3C));
+    }
+
     public function testContainerMethodInjection()
     {
         $container = new Container();
 
         $container
-            ->add('method', new MethodInjection())
+            ->add('date', new MethodInjection())
             ->withMethod('now')
             ->withArguments([
                 new DateTime(),
             ]);
 
-        $methodInjection = $container->get('method');
+        $date = $container->get('date');
 
-        $this->assertEquals($methodInjection->date, (new DateTime())->format(DateTime::W3C));
+        $this->assertEquals($date->date, (new DateTime())->format(DateTime::W3C));
     }
 
     public function testContainerClosure()

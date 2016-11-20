@@ -30,8 +30,7 @@ class ContainerDependencyInjectionTest extends PHPUnit_Framework_TestCase
         $container->add('date', function (DateTimeZone $dateTimeZone) {
             return new DateTime('now', $dateTimeZone);
         });
-        $dateTimeZone = $container->get('zone');
-        
+
         $dateTimeZone = $container->get('date');
 
         $this->assertInstanceOf(DateTime::class, $dateTimeZone);
