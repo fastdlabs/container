@@ -21,27 +21,27 @@ class Injection implements FactoryInterface, InjectionInterface
     /**
      * @var mixed
      */
-    protected $instance;
+    public $instance;
 
     /**
      * @var mixed
      */
-    protected $obj;
+    public $obj;
 
     /**
      * @var string
      */
-    protected $method;
+    public $method;
 
     /**
      * @var bool
      */
-    protected $isStatic = false;
+    public $isStatic = false;
 
     /**
      * @var array
      */
-    protected $arguments = [];
+    public $arguments = [];
 
     /**
      * Injection constructor.
@@ -62,6 +62,11 @@ class Injection implements FactoryInterface, InjectionInterface
     public function injectOn($service)
     {
         $this->obj = $service;
+
+        $this->arguments = [];
+        $this->isStatic = false;
+        $this->method = null;
+        $this->instance = null;
 
         return $this;
     }
@@ -115,11 +120,7 @@ class Injection implements FactoryInterface, InjectionInterface
      */
     public function getInstance(array $arguments = [])
     {
-        if (null === $this->instance) {
-            $this->instance = (new ReflectionClass($this->obj))->newInstanceArgs($arguments);
-        }
-
-        return $this->instance;
+        return (new ReflectionClass($this->obj))->newInstanceArgs($arguments);
     }
 
     /**
@@ -142,14 +143,36 @@ class Injection implements FactoryInterface, InjectionInterface
             return $this->getInstance($arguments);
         }
 
-        $obj = $this->instance;
+        $obj = $this->obj;
 
         if (!is_object($obj)) {
-            $obj = new $this->obj;
+            $obj = new $obj;
+        }
+
+        if (empty($this->method)) {
+            return $obj;
         }
 
         call_user_func_array([$obj, $this->method], $arguments);
 
         return $obj;
+    }
+
+    /**
+     * @param array $arguments
+     * @return mixed
+     */
+    public function singleton(array $arguments = [])
+    {
+        $instance = $this->instance;
+
+        if (null === $instance) {
+            $instance = $this->make($arguments);
+            if (!is_callable($this->instance) && is_object($this->instance)) {
+                $this->instance = $instance;
+            }
+        }
+
+        return $instance;
     }
 }

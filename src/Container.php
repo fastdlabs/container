@@ -30,6 +30,16 @@ class Container implements ContainerInterface
     protected $map = [];
 
     /**
+     * @var Injection
+     */
+    protected $factory;
+
+    public function __construct()
+    {
+        $this->factory = new Injection();
+    }
+
+    /**
      * @param $name
      * @param $service
      * @return Injection
@@ -40,26 +50,29 @@ class Container implements ContainerInterface
             $this->map[get_class($service)] = $name;
         }
 
-        $injection = new Injection($service);
+        $injection = clone $this->factory;
 
-        $this->services[$name] = $injection;
+        $this->services[$name] = $injection->injectOn($service);
 
         return $injection;
     }
 
     /**
      * @param string $name
-     * @return bool|Injection
+     * @return mixed
      */
     public function get($name)
     {
-        $name = $this->find($name);
+        return $this->find($name)->make();
+    }
 
-        if (false === $name || !isset($this->services[$name])) {
-            throw new ServiceNotFoundException($name);
-        }
-
-        return isset($this->services[$name]) ? $this->services[$name]->make() : false;
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function singleton($name)
+    {
+        return $this->find($name)->singleton();
     }
 
     /**
@@ -68,17 +81,39 @@ class Container implements ContainerInterface
      */
     public function has($name)
     {
-        $name = $this->find($name);
+        if (isset($this->map[$name])) {
+            return $this->map[$name];
+        }
 
-        return isset($this->services[$name]) ? true : false;
+        return isset($this->services[$name]) ? $name : false;
     }
 
     /**
      * @param $name
-     * @return string
+     * @return Injection
      */
     public function find($name)
     {
-        return isset($this->map[$name]) ? $this->map[$name] : $name;
+        $name = $this->has($name);
+
+        if (false === $name) {
+            throw new ServiceNotFoundException($name);
+        }
+
+        $args = [];
+        if (!is_object($this->services[$name]->instance)) {
+            if (is_callable($this->services[$name]->obj)) {
+                $args = DependDetection::detectionClosureArgs($this->services[$name]->obj);
+            } else if (!empty($this->services[$name]->method) && empty($this->services[$name]->arguments)) {
+                $args = DependDetection::detectionObjectArgs($this->services[$name]->obj, $this->services[$name]->method);
+            }
+        }
+
+        $dependencyArgs = [];
+        foreach ($args as $arg) {
+            $dependencyArgs[] = $this->get($arg);
+        }
+
+        return empty($dependencyArgs) ? $this->services[$name] : $this->services[$name]->withArguments($dependencyArgs);
     }
 }

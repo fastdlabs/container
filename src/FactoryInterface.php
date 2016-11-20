@@ -21,4 +21,10 @@ interface FactoryInterface
      * @return mixed
      */
     public function make(array $arguments = []);
+
+    /**
+     * @param array $arguments
+     * @return mixed
+     */
+    public function singleton(array $arguments = []);
 }

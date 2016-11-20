@@ -27,7 +27,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         include_once __DIR__ . '/Services/StaticInjection.php';
     }
 
-    public function testSetGet()
+    public function testContainerMethodInjection()
     {
         $container = new Container();
 
@@ -57,6 +57,10 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         $dateTime = $container->get('now');
 
-        print_r($dateTime);
+        $this->assertEquals('UTC', $dateTime->getTimeZone()->getName());
+
+        $timeZone = $container->get('time');
+
+        $this->assertEquals($timeZone, $dateTime->getTimeZone());
     }
 }
