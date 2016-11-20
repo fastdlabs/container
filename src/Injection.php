@@ -130,6 +130,10 @@ class Injection implements FactoryInterface, InjectionInterface
     {
         $arguments = array_merge($this->arguments, $arguments);
 
+        if (is_callable($this->obj)) {
+            return call_user_func_array($this->obj, $arguments);
+        }
+
         if ($this->isStatic) {
             return call_user_func_array($this->obj . '::' . $this->method, $arguments);
         }

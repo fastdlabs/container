@@ -36,11 +36,27 @@ class ContainerTest extends PHPUnit_Framework_TestCase
             ->withMethod('now')
             ->withArguments([
                 new DateTime(),
-            ])
-        ;
+            ]);
 
         $methodInjection = $container->get('method');
 
         $this->assertEquals($methodInjection->date, (new DateTime())->format(DateTime::W3C));
+    }
+
+    public function testContainerClosure()
+    {
+        $container = new Container();
+
+        $container->add('now', function () use ($container) {
+            return new DateTime('now', $container->get('time'));
+        });
+
+        $container->add('time', function () {
+            return new DateTimeZone('UTC');
+        });
+
+        $dateTime = $container->get('now');
+
+        print_r($dateTime);
     }
 }

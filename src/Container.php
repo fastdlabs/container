@@ -53,7 +53,7 @@ class Container implements ContainerInterface
      */
     public function get($name)
     {
-        $name = $this->findService($name);
+        $name = $this->find($name);
 
         if (false === $name || !isset($this->services[$name])) {
             throw new ServiceNotFoundException($name);
@@ -68,7 +68,7 @@ class Container implements ContainerInterface
      */
     public function has($name)
     {
-        $name = $this->findService($name);
+        $name = $this->find($name);
 
         return isset($this->services[$name]) ? true : false;
     }
@@ -77,7 +77,7 @@ class Container implements ContainerInterface
      * @param $name
      * @return string
      */
-    public function findService($name)
+    public function find($name)
     {
         return isset($this->map[$name]) ? $this->map[$name] : $name;
     }
