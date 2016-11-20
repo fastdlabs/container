@@ -9,7 +9,6 @@
 
 namespace FastD\Container\Exceptions;
 
-use Psr\Container\Exception\NotFoundException;
 use RuntimeException;
 
 /**
@@ -17,7 +16,7 @@ use RuntimeException;
  *
  * @package FastD\Container\Exceptions
  */
-class ServiceNotFoundException extends RuntimeException  implements NotFoundException
+class ServiceNotFoundException extends RuntimeException
 {
     /**
      * ServiceNotFoundException constructor.
