@@ -7,7 +7,7 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD;
+namespace FastD\Container;
 
 interface ContainerInterface
 {

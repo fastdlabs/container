@@ -10,7 +10,6 @@
 namespace FastD\Container;
 
 use FastD\Container\Exceptions\ServiceNotFoundException;
-use Psr\Container\ContainerInterface;
 
 /**
  * Class Container
