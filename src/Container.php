@@ -91,6 +91,53 @@ class Container implements ContainerInterface, ArrayAccess
     }
 
     /**
+     * @param $name
+     * @param $object
+     * @return Injection
+     */
+    public function injectOn($name, $object)
+    {
+        $name = null === $name ? $this->active : $name;
+
+        $injection = new Injection($object);
+
+        $injection->setContainer($this);
+
+        $this->injections[$name] = $injection;
+
+        return $injection;
+    }
+
+    /**
+     * @param $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function make($name, array $arguments = [])
+    {
+        if (!isset($this->injections[$name])) {
+            throw new InjectionNotFoundException($name);
+        }
+
+        $service = $this->injections[$name];
+
+        $this->services[$name] = $service->make($arguments);
+
+        return $this->services[$name];
+    }
+
+    /**
+     * @param ServiceProviderInterface $serviceProvider
+     * @return Container
+     */
+    public function register(ServiceProviderInterface $serviceProvider)
+    {
+        $serviceProvider->register($this);
+
+        return $this;
+    }
+
+    /**
      * Whether a offset exists
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetexists.php
@@ -160,52 +207,5 @@ class Container implements ContainerInterface, ArrayAccess
         if (isset($this->services[$offset])) {
             unset($this->services[$offset]);
         }
-    }
-
-    /**
-     * @param $name
-     * @param $object
-     * @return Injection
-     */
-    public function injectOn($name, $object)
-    {
-        $name = null === $name ? $this->active : $name;
-
-        $injection = new Injection($object);
-
-        $injection->setContainer($this);
-
-        $this->injections[$name] = $injection;
-
-        return $injection;
-    }
-
-    /**
-     * @param $name
-     * @param array $arguments
-     * @return mixed
-     */
-    public function make($name, array $arguments = [])
-    {
-        if (!isset($this->injections[$name])) {
-            throw new InjectionNotFoundException($name);
-        }
-
-        $service = $this->injections[$name];
-
-        $this->services[$name] = $service->make($arguments);
-
-        return $this->services[$name];
-    }
-
-    /**
-     * @param ServiceProviderInterface $serviceProvider
-     * @return Container
-     */
-    public function register(ServiceProviderInterface $serviceProvider)
-    {
-        $serviceProvider->register($this);
-
-        return $this;
     }
 }
