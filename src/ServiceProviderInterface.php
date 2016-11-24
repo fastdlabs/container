@@ -10,15 +10,15 @@
 namespace FastD\Container;
 
 /**
- * Interface FactoryInterface
+ * Interface ServiceProviderInterface
  *
  * @package FastD\Container
  */
-interface FactoryInterface
+interface ServiceProviderInterface
 {
     /**
-     * @param array $arguments
+     * @param Container $container
      * @return mixed
      */
-    public function make(array $arguments = []);
+    public function register(Container $container);
 }

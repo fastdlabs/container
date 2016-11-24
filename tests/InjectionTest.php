@@ -82,19 +82,4 @@ class InjectionTest extends PHPUnit_Framework_TestCase
         $obj = $injection->make();
         $this->assertEquals($obj->date, (new DateTime())->format(DateTime::W3C));
     }
-
-    public function testNewInstanceEachOther()
-    {
-        $injection = new Injection(new MethodInjection());
-
-        $injection->withMethod('now')
-            ->withArguments([
-                new DateTime(),
-            ]);
-
-        $obj = $injection->make();
-        $obj2 = $injection->singleton();
-
-        $this->assertEquals($obj, $obj2);
-    }
 }

@@ -9,6 +9,7 @@
 
 namespace FastD\Container;
 
+use FastD\Container\Support\ContainerAware;
 use ReflectionClass;
 
 /**
@@ -18,30 +19,27 @@ use ReflectionClass;
  */
 class Injection implements FactoryInterface, InjectionInterface
 {
-    /**
-     * @var mixed
-     */
-    public $instance;
+    use ContainerAware;
 
     /**
      * @var mixed
      */
-    public $obj;
+    protected $object;
 
     /**
      * @var string
      */
-    public $method;
+    protected $method;
 
     /**
      * @var bool
      */
-    public $isStatic = false;
+    protected $isStatic = false;
 
     /**
      * @var array
      */
-    public $arguments = [];
+    protected $arguments = [];
 
     /**
      * Injection constructor.
@@ -61,12 +59,11 @@ class Injection implements FactoryInterface, InjectionInterface
      */
     public function injectOn($service)
     {
-        $this->obj = $service;
+        $this->object = $service;
 
         $this->arguments = [];
         $this->isStatic = false;
         $this->method = null;
-        $this->instance = null;
 
         return $this;
     }
@@ -120,7 +117,7 @@ class Injection implements FactoryInterface, InjectionInterface
      */
     public function getInstance(array $arguments = [])
     {
-        return (new ReflectionClass($this->obj))->newInstanceArgs($arguments);
+        return (new ReflectionClass($this->object))->newInstanceArgs($arguments);
     }
 
     /**
@@ -129,21 +126,35 @@ class Injection implements FactoryInterface, InjectionInterface
      */
     public function make(array $arguments = [])
     {
+        if (empty($this->arguments)) {
+            if (is_callable($this->object)) {
+                $injections = DependDetection::detectionClosureArgs($this->object);
+            } else {
+                $injections = DependDetection::detectionObjectArgs($this->object, $this->method);
+            }
+
+            foreach ($injections as $injection) {
+                $this->arguments[] = $this->container->get($injection);
+            }
+
+            echo 1;
+        }
+
         $arguments = array_merge($this->arguments, $arguments);
 
-        if (is_callable($this->obj)) {
-            return call_user_func_array($this->obj, $arguments);
+        if (is_callable($this->object)) {
+            return call_user_func_array($this->object, $arguments);
         }
 
         if ($this->isStatic) {
-            return call_user_func_array($this->obj . '::' . $this->method, $arguments);
+            return call_user_func_array($this->object . '::' . $this->method, $arguments);
         }
 
         if ('__construct' === $this->method) {
             return $this->getInstance($arguments);
         }
 
-        $obj = $this->obj;
+        $obj = $this->object;
 
         if (!is_object($obj)) {
             $obj = new $obj;
@@ -156,23 +167,5 @@ class Injection implements FactoryInterface, InjectionInterface
         call_user_func_array([$obj, $this->method], $arguments);
 
         return $obj;
-    }
-
-    /**
-     * @param array $arguments
-     * @return mixed
-     */
-    public function singleton(array $arguments = [])
-    {
-        $instance = $this->instance;
-
-        if (null === $instance) {
-            $instance = $this->make($arguments);
-            if (!is_callable($this->instance) && is_object($this->instance)) {
-                $this->instance = $instance;
-            }
-        }
-
-        return $instance;
     }
 }

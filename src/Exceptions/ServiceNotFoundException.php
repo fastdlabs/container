@@ -9,14 +9,12 @@
 
 namespace FastD\Container\Exceptions;
 
-use RuntimeException;
-
 /**
  * Class ServiceNotFoundException
  *
  * @package FastD\Container\Exceptions
  */
-class ServiceNotFoundException extends RuntimeException
+class ServiceNotFoundException extends ContainerException
 {
     /**
      * ServiceNotFoundException constructor.
@@ -25,6 +23,6 @@ class ServiceNotFoundException extends RuntimeException
      */
     public function __construct($service)
     {
-        parent::__construct(sprintf('Service %s not found', $service));
+        parent::__construct(sprintf('Service "%s" not found', $service));
     }
 }

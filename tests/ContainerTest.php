@@ -25,58 +25,68 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         include_once __DIR__ . '/Services/ConstructorInjection.php';
         include_once __DIR__ . '/Services/MethodInjection.php';
         include_once __DIR__ . '/Services/StaticInjection.php';
+
+        $this->container = new FastD\Container\Container();
     }
 
-    public function testContainerConstructInjection()
-    {
-        $container = new Container();
-
-        $container
-            ->add('date', ConstructorInjection::class)
-            ->withConstruct()
-            ->withArguments([
-                new DateTime(),
-            ]);
-
-        $date = $container->get('date');
-
-        $this->assertEquals($date->date, (new DateTime())->format(DateTime::W3C));
-    }
-
-    public function testContainerMethodInjection()
-    {
-        $container = new Container();
-
-        $container
-            ->add('date', new MethodInjection())
-            ->withMethod('now')
-            ->withArguments([
-                new DateTime(),
-            ]);
-
-        $date = $container->get('date');
-
-        $this->assertEquals($date->date, (new DateTime())->format(DateTime::W3C));
-    }
-
+    /**
+     * @expectedException \FastD\Container\Exceptions\ServiceNotFoundException
+     */
     public function testContainerClosure()
     {
-        $container = new Container();
-
-        $container->add('now', function () use ($container) {
-            return new DateTime('now', $container->get('time'));
-        });
-
-        $container->add('time', function () {
+        $this->container->add('timezone', function () {
             return new DateTimeZone('UTC');
         });
 
-        $dateTime = $container->get('now');
+        $this->container->add('date', function () {
+            return new DateTime('now', $this->container->get('timezone'));
+        });
 
-        $this->assertEquals('UTC', $dateTime->getTimeZone()->getName());
+        $date = $this->container->get('date');
 
-        $timeZone = $container->get('time');
+        $date2 = $this->container['date'];
 
-        $this->assertEquals($timeZone, $dateTime->getTimeZone());
+        $this->assertEquals($date, $date2);
+
+        $this->assertTrue(isset($this->container['date']));
+
+        $this->container['timestamp'] = function () {
+            return new class
+            {
+            };
+        };
+
+        $this->assertTrue(isset($this->container['timestamp']));
+
+        unset($this->container['date']);
+
+        $this->container['date'];
+    }
+
+    public function testContainerInjection()
+    {
+        $this->container->injectOn(
+            'date',
+            function (DateTimeZone $dateTimeZone) {
+                return new DateTime('now', $dateTimeZone);
+            }
+        )->withArguments([new DateTimeZone('UTC')]);
+
+        $date = $this->container->make('date');
+
+        $this->assertEquals($date, $this->container->get('date'));
+    }
+
+    public function testContainerClosureInjection()
+    {
+        $this->container->add('zone', new DateTimeZone('UTC'));
+
+        $this->container->injectOn('date', function (DateTimeZone $dateTimeZone) {
+            return new DateTime('now', $dateTimeZone);
+        });
+
+        $date = $this->container->make('date');
+
+        $this->assertEquals($date, $this->container->get('date'));
     }
 }

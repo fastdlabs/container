@@ -9,6 +9,8 @@
 
 namespace FastD\Container;
 
+use ArrayAccess;
+use FastD\Container\Exceptions\InjectionNotFoundException;
 use FastD\Container\Exceptions\ServiceNotFoundException;
 
 /**
@@ -16,10 +18,10 @@ use FastD\Container\Exceptions\ServiceNotFoundException;
  *
  * @package FastD\Container
  */
-class Container implements ContainerInterface
+class Container implements ContainerInterface, ArrayAccess
 {
     /**
-     * @var Injection[]
+     * @var array
      */
     protected $services = [];
 
@@ -29,31 +31,31 @@ class Container implements ContainerInterface
     protected $map = [];
 
     /**
-     * @var Injection
+     * @var Injection[]
      */
-    protected $factory;
+    protected $injections = [];
 
-    public function __construct()
-    {
-        $this->factory = new Injection();
-    }
+    /**
+     * @var string
+     */
+    protected $active;
 
     /**
      * @param $name
      * @param $service
-     * @return Injection
+     * @return Container
      */
     public function add($name, $service)
     {
-        if (is_object($service)) {
+        $this->active = $name;
+
+        if (!is_callable($service) && is_object($service)) {
             $this->map[get_class($service)] = $name;
         }
 
-        $injection = clone $this->factory;
+        $this->services[$name] = $service;
 
-        $this->services[$name] = $injection->injectOn($service);
-
-        return $injection;
+        return $this;
     }
 
     /**
@@ -62,16 +64,17 @@ class Container implements ContainerInterface
      */
     public function get($name)
     {
-        return $this->find($name)->make();
-    }
+        if (isset($this->map[$name])) {
+            $name = $this->map[$name];
+        }
 
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function singleton($name)
-    {
-        return $this->find($name)->singleton();
+        if (!isset($this->services[$name])) {
+            throw new ServiceNotFoundException($name);
+        }
+
+        $service = $this->services[$name];
+
+        return is_callable($service) ? $service($this) : $service;
     }
 
     /**
@@ -84,35 +87,125 @@ class Container implements ContainerInterface
             return $this->map[$name];
         }
 
-        return isset($this->services[$name]) ? $name : false;
+        return isset($this->services[$name]) ? true : false;
+    }
+
+    /**
+     * Whether a offset exists
+     *
+     * @link  http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @param mixed $offset <p>
+     *                      An offset to check for.
+     *                      </p>
+     * @return boolean true on success or false on failure.
+     *                      </p>
+     *                      <p>
+     *                      The return value will be casted to boolean if non-boolean was returned.
+     * @since 5.0.0
+     */
+    public function offsetExists($offset)
+    {
+        return $this->has($offset);
+    }
+
+    /**
+     * Offset to retrieve
+     *
+     * @link  http://php.net/manual/en/arrayaccess.offsetget.php
+     * @param mixed $offset <p>
+     *                      The offset to retrieve.
+     *                      </p>
+     * @return mixed Can return all value types.
+     * @since 5.0.0
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * Offset to set
+     *
+     * @link  http://php.net/manual/en/arrayaccess.offsetset.php
+     * @param mixed $offset <p>
+     *                      The offset to assign the value to.
+     *                      </p>
+     * @param mixed $value  <p>
+     *                      The value to set.
+     *                      </p>
+     * @return void
+     * @since 5.0.0
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->add($offset, $value);
+    }
+
+    /**
+     * Offset to unset
+     *
+     * @link  http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @param mixed $offset <p>
+     *                      The offset to unset.
+     *                      </p>
+     * @return void
+     * @since 5.0.0
+     */
+    public function offsetUnset($offset)
+    {
+        if (isset($this->map[$offset])) {
+            unset($this->map[$offset]);
+        }
+
+        if (isset($this->services[$offset])) {
+            unset($this->services[$offset]);
+        }
     }
 
     /**
      * @param $name
+     * @param $object
      * @return Injection
      */
-    public function find($name)
+    public function injectOn($name, $object)
     {
-        $name = $this->has($name);
+        $name = null === $name ? $this->active : $name;
 
-        if (false === $name) {
-            throw new ServiceNotFoundException($name);
+        $injection = new Injection($object);
+
+        $injection->setContainer($this);
+
+        $this->injections[$name] = $injection;
+
+        return $injection;
+    }
+
+    /**
+     * @param $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function make($name, array $arguments = [])
+    {
+        if (!isset($this->injections[$name])) {
+            throw new InjectionNotFoundException($name);
         }
 
-        $args = [];
-        if (!is_object($this->services[$name]->instance)) {
-            if (is_callable($this->services[$name]->obj)) {
-                $args = DependDetection::detectionClosureArgs($this->services[$name]->obj);
-            } else if (!empty($this->services[$name]->method) && empty($this->services[$name]->arguments)) {
-                $args = DependDetection::detectionObjectArgs($this->services[$name]->obj, $this->services[$name]->method);
-            }
-        }
+        $service = $this->injections[$name];
 
-        $dependencyArgs = [];
-        foreach ($args as $arg) {
-            $dependencyArgs[] = $this->get($arg);
-        }
+        $this->services[$name] = $service->make($arguments);
 
-        return empty($dependencyArgs) ? $this->services[$name] : $this->services[$name]->withArguments($dependencyArgs);
+        return $this->services[$name];
+    }
+
+    /**
+     * @param ServiceProviderInterface $serviceProvider
+     * @return Container
+     */
+    public function register(ServiceProviderInterface $serviceProvider)
+    {
+        $serviceProvider->register($this);
+
+        return $this;
     }
 }

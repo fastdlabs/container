@@ -7,10 +7,15 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Container;
+namespace FastD\Container\Support;
 
-use FastD\ContainerInterface;
+use FastD\Container\ContainerInterface;
 
+/**
+ * Class ContainerAware
+ *
+ * @package FastD\Container
+ */
 trait ContainerAware
 {
     /**

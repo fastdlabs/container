@@ -23,7 +23,7 @@ composer require "fastd/container:3.0.x-dev" -vvv
 $container = new FastD\Container\Container();
 
 $container
-    ->add('date', new MethodInjection())
+    ->injectOn('date', new MethodInjection())
     ->withMethod('now')
     ->withArguments([
         new DateTime(),
@@ -40,7 +40,7 @@ echo $obj->date; // (new DateTime())->format(DateTime::W3C)
 $container = new FastD\Container\Container();
 
 $container
-    ->add('date', ConstructorInjection::class)
+    ->injectOn('date', ConstructorInjection::class)
     ->withConstruct()
     ->withArguments([
         new DateTime(),
@@ -76,7 +76,7 @@ $container = new FastD\Container\Container();
 
 $container->add('zone', new DateTimeZone('UTC'));
 
-$container->add('date', function (DateTimeZone $dateTimeZone) {
+$container->injectOn('date', function (DateTimeZone $dateTimeZone) {
     return new DateTime('now', $dateTimeZone);
 });
 
