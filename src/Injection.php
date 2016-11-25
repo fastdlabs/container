@@ -136,8 +136,6 @@ class Injection implements FactoryInterface, InjectionInterface
             foreach ($injections as $injection) {
                 $this->arguments[] = $this->container->get($injection);
             }
-
-            echo 1;
         }
 
         $arguments = array_merge($this->arguments, $arguments);
@@ -164,8 +162,6 @@ class Injection implements FactoryInterface, InjectionInterface
             return $obj;
         }
 
-        call_user_func_array([$obj, $this->method], $arguments);
-
-        return $obj;
+        return call_user_func_array([$obj, $this->method], $arguments);
     }
 }

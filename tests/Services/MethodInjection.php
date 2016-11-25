@@ -14,5 +14,7 @@ class MethodInjection
     public function now(DateTime $date)
     {
         $this->date = $date->format(DateTime::W3C);
+
+        return $this;
     }
 }
