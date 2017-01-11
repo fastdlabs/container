@@ -74,7 +74,19 @@ class Container implements ContainerInterface, ArrayAccess
 
         $service = $this->services[$name];
 
-        return is_callable($service) ? $service($this) : $service;
+        if (is_object($service)) {
+            // magic invoke class
+            if (method_exists($service, '__invoke')) {
+                return $service;
+            }
+
+            // anonymous function
+            if (is_callable($service)) {
+                return $service($this);
+            }
+        }
+
+        return $service;
     }
 
     /**

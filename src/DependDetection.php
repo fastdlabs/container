@@ -11,6 +11,7 @@ namespace FastD\Container;
 
 use Closure;
 use ReflectionClass;
+use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
@@ -38,7 +39,7 @@ class DependDetection
      */
     public static function detectionClosureArgs(Closure $closure)
     {
-        $reflection = new \ReflectionFunction($closure);
+        $reflection = new ReflectionFunction($closure);
         return static::detectionArgs($reflection);
     }
 
