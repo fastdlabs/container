@@ -76,13 +76,12 @@ class Container implements ContainerInterface, ArrayAccess
 
         if (is_object($service)) {
             // magic invoke class
-            if (method_exists($service, '__invoke')) {
-                return $service;
+            if (method_exists($service, 'bindTo') && is_callable($service)) {
+                return $service($this);
             }
-
             // anonymous function
             if (is_callable($service)) {
-                return $service($this);
+                return $service;
             }
         }
 
