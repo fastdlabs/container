@@ -29,9 +29,6 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->container = new FastD\Container\Container();
     }
 
-    /**
-     * @expectedException \FastD\Container\Exceptions\ServiceNotFoundException
-     */
     public function testContainerClosure()
     {
         $this->container->add('timezone', function () {
@@ -46,7 +43,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         $date2 = $this->container['date'];
 
-        $this->assertEquals($date, $date2);
+        $this->assertEquals($date, $date2());
 
         $this->assertTrue(isset($this->container['date']));
 
@@ -60,7 +57,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
 
         unset($this->container['date']);
 
-        $this->container['date'];
+//        $this->container['date'];
     }
 
     public function testContainerInjection()
