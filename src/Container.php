@@ -10,9 +10,8 @@
 namespace FastD\Container;
 
 use ArrayAccess;
-use FastD\Container\Exceptions\InjectionNotFoundException;
-use FastD\Container\Exceptions\ServiceNotFoundException;
 use Iterator;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class Container
@@ -70,7 +69,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
         }
 
         if (!isset($this->services[$name])) {
-            throw new ServiceNotFoundException($name);
+            throw new NotFoundException($name);
         }
 
         $service = $this->services[$name];
@@ -113,7 +112,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
 
         $injection = new Injection($object);
 
-        $injection->setContainer($this);
+        $injection->withContainer($this);
 
         $this->injections[$name] = $injection;
 
@@ -124,11 +123,12 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @param $name
      * @param array $arguments
      * @return mixed
+     * @throws NotFoundException
      */
     public function make($name, array $arguments = [])
     {
         if (!isset($this->injections[$name])) {
-            throw new InjectionNotFoundException($name);
+            throw new NotFoundException($name);
         }
 
         $service = $this->injections[$name];

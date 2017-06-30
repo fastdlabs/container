@@ -30,7 +30,7 @@ class ContainerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \FastD\Container\Exceptions\ServiceNotFoundException
+     * @expectedException \FastD\Container\NotFoundException
      */
     public function testContainerClosure()
     {

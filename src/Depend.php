@@ -20,7 +20,7 @@ use ReflectionMethod;
  *
  * @package FastD\Container
  */
-class DependDetection
+class Depend
 {
     /**
      * @param $obj

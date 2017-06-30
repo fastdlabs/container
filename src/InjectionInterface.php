@@ -17,6 +17,12 @@ namespace FastD\Container;
 interface InjectionInterface
 {
     /**
+     * @param array $arguments
+     * @return mixed
+     */
+    public function make(array $arguments = []);
+
+    /**
      * @param $instance
      * @return mixed
      */

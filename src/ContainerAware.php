@@ -7,9 +7,10 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Container\Support;
+namespace FastD\Container;
 
-use FastD\Container\ContainerInterface;
+
+use Psr\Container\ContainerInterface;
 
 /**
  * Class ContainerAware
@@ -27,7 +28,7 @@ trait ContainerAware
      * @param ContainerInterface $container
      * @return $this
      */
-    public function setContainer(ContainerInterface $container)
+    public function withContainer(ContainerInterface $container)
     {
         $this->container = $container;
 

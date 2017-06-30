@@ -9,7 +9,6 @@
 
 namespace FastD\Container;
 
-use FastD\Container\Support\ContainerAware;
 use ReflectionClass;
 
 /**
@@ -17,7 +16,7 @@ use ReflectionClass;
  *
  * @package FastD\Container
  */
-class Injection implements FactoryInterface, InjectionInterface
+class Injection implements InjectionInterface
 {
     use ContainerAware;
 
@@ -128,9 +127,9 @@ class Injection implements FactoryInterface, InjectionInterface
     {
         if (empty($this->arguments)) {
             if (is_callable($this->object)) {
-                $injections = DependDetection::detectionClosureArgs($this->object);
+                $injections = Depend::detectionClosureArgs($this->object);
             } else {
-                $injections = DependDetection::detectionObjectArgs($this->object, $this->method);
+                $injections = Depend::detectionObjectArgs($this->object, $this->method);
             }
 
             foreach ($injections as $injection) {
