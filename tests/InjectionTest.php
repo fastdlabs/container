@@ -40,7 +40,7 @@ class InjectionTest extends PHPUnit_Framework_TestCase
     public function testStaticInjection()
     {
         $injection = new Injection(StaticInjection::class);
-        $injection->withStatic('now')->withArguments([
+        $injection->withMethod('now', true)->withArguments([
             new DateTime(),
         ]);
         $injection->make();
