@@ -9,6 +9,7 @@
 
 namespace FastD\Container;
 
+
 use ReflectionClass;
 
 /**
@@ -49,6 +50,7 @@ class Injection implements InjectionInterface
     {
         if (null !== $service) {
             $this->injectOn($service);
+            $this->withConstruct();
         }
     }
 
@@ -76,25 +78,15 @@ class Injection implements InjectionInterface
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @param bool $isStatic
      * @return $this
      */
-    public function withMethod($name)
+    public function withMethod($name, $isStatic = false)
     {
         $this->method = $name;
 
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function withStatic($name)
-    {
-        $this->method = $name;
-
-        $this->isStatic = true;
+        $this->isStatic = $isStatic;
 
         return $this;
     }
@@ -157,6 +149,7 @@ class Injection implements InjectionInterface
             $obj = new $obj;
         }
 
+        var_export($this->method);
         if (empty($this->method)) {
             return $obj;
         }

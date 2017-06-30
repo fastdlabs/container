@@ -9,6 +9,7 @@
 
 namespace FastD\Container;
 
+
 /**
  * Interface InjectionInterface
  *
@@ -29,16 +30,11 @@ interface InjectionInterface
     public function injectOn($instance);
 
     /**
-     * @param $method
+     * @param string $method
+     * @param bool $isStatic
      * @return mixed
      */
-    public function withMethod($method);
-
-    /**
-     * @param $method
-     * @return mixed
-     */
-    public function withStatic($method);
+    public function withMethod($method, $isStatic = false);
 
     /**
      * @param array $arguments

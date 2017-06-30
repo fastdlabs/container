@@ -9,6 +9,7 @@
 
 namespace FastD\Container;
 
+
 use ArrayAccess;
 use Iterator;
 use Psr\Container\ContainerInterface;
@@ -36,21 +37,18 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
     protected $injections = [];
 
     /**
-     * @var string
-     */
-    protected $active;
-
-    /**
      * @param $name
      * @param $service
      * @return Container
      */
     public function add($name, $service)
     {
-        $this->active = $name;
-
-        if (!is_callable($service) && is_object($service)) {
-            $this->map[get_class($service)] = $name;
+        if (!($service instanceof \Closure)) {
+            if (is_object($service)) {
+                $this->map[get_class($service)] = $name;
+            } elseif (is_string($service)) {
+                $this->map[$service] = $name;
+            }
         }
 
         $this->services[$name] = $service;
@@ -64,9 +62,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      */
     public function get($name)
     {
-        if (isset($this->map[$name])) {
-            $name = $this->map[$name];
-        }
+        $name = $this->map[$name] ?? $name;
 
         if (!isset($this->services[$name])) {
             throw new NotFoundException($name);
@@ -95,28 +91,10 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
     public function has($name)
     {
         if (isset($this->map[$name])) {
-            return $this->map[$name];
+            $name = $this->map[$name];
         }
 
         return isset($this->services[$name]) ? true : false;
-    }
-
-    /**
-     * @param $name
-     * @param $object
-     * @return Injection
-     */
-    public function injectOn($name, $object)
-    {
-        $name = null === $name ? $this->active : $name;
-
-        $injection = new Injection($object);
-
-        $injection->withContainer($this);
-
-        $this->injections[$name] = $injection;
-
-        return $injection;
     }
 
     /**
@@ -127,15 +105,17 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      */
     public function make($name, array $arguments = [])
     {
-        if (!isset($this->injections[$name])) {
+        if (!$this->has($name)) {
             throw new NotFoundException($name);
         }
 
-        $service = $this->injections[$name];
+        if (!isset($this->injections[$name])) {
+            $service = $this->get($name);
 
-        $this->services[$name] = $service->make($arguments);
+            $this->injections[$name] = (new Injection($service))->withContainer($this);
+        }
 
-        return $this->services[$name];
+        return $this->injections[$name]->make($arguments);
     }
 
     /**

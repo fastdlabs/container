@@ -7,12 +7,12 @@ Simple DI Container
 
 ### requirements
 
-* PHP >=5.6
+* PHP >=7.0
 
 ### installation
 
-```json
-composer require "fastd/container:3.0.x-dev" -vvv
+```
+composer require "fastd/container" -vvv
 ```
 
 ### usage
