@@ -62,7 +62,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      */
     public function get($name)
     {
-        $name = $this->map[$name] ?? $name;
+        $name = isset($this->map[$name]) ? $this->map[$name] :  $name;
 
         if (!isset($this->services[$name])) {
             throw new NotFoundException($name);
