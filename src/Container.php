@@ -11,6 +11,7 @@ namespace FastD\Container;
 
 
 use ArrayAccess;
+use Closure;
 use Iterator;
 use Psr\Container\ContainerInterface;
 use ReflectionException;
@@ -44,7 +45,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      */
     public function add($name, $service): Container
     {
-        if (!($service instanceof \Closure)) {
+        if (!($service instanceof Closure)) {
             if (is_object($service)) {
                 $this->map[get_class($service)] = $name;
             } elseif (is_string($service)) {
@@ -101,7 +102,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
     /**
      * @param $name
      * @param array $arguments
-     * @return callable|mixed|object
+     * @return mixed
      * @throws ReflectionException
      */
     public function make($name, array $arguments = [])
