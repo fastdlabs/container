@@ -34,7 +34,7 @@ interface InjectionInterface
      * @param bool $isStatic
      * @return mixed
      */
-    public function withMethod($method, $isStatic = false);
+    public function withMethod(string $method, bool $isStatic = false);
 
     /**
      * @param array $arguments

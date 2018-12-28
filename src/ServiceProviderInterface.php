@@ -19,7 +19,7 @@ interface ServiceProviderInterface
 {
     /**
      * @param Container $container
-     * @return mixed
+     * @return void
      */
-    public function register(Container $container);
+    public function register(Container $container): void;
 }

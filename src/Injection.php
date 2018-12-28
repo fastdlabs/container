@@ -55,10 +55,10 @@ class Injection implements InjectionInterface
     }
 
     /**
-     * @param $service
-     * @return $this
+     * @param string $service
+     * @return Injection
      */
-    public function injectOn($service)
+    public function injectOn(string $service): Injection
     {
         $this->object = $service;
 

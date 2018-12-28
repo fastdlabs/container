@@ -41,7 +41,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @param $service
      * @return Container
      */
-    public function add($name, $service)
+    public function add($name, $service): Container
     {
         if (!($service instanceof \Closure)) {
             if (is_object($service)) {
@@ -88,7 +88,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @param string $name
      * @return bool
      */
-    public function has($name)
+    public function has($name): bool
     {
         if (isset($this->map[$name])) {
             $name = $this->map[$name];
@@ -122,7 +122,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @param ServiceProviderInterface $serviceProvider
      * @return Container
      */
-    public function register(ServiceProviderInterface $serviceProvider)
+    public function register(ServiceProviderInterface $serviceProvider): Container
     {
         $serviceProvider->register($this);
 

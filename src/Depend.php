@@ -25,10 +25,11 @@ class Depend
 {
     /**
      * @param $obj
-     * @param $method
+     * @param string $method
      * @return array
+     * @throws \ReflectionException
      */
-    public static function detectionObjectArgs($obj, $method)
+    public static function detectionObjectArgs($obj, string $method): array
     {
         $reflection = new ReflectionMethod($obj, $method);
         return static::detectionArgs($reflection);
@@ -37,8 +38,9 @@ class Depend
     /**
      * @param Closure $closure
      * @return array
+     * @throws \ReflectionException
      */
-    public static function detectionClosureArgs(Closure $closure)
+    public static function detectionClosureArgs(Closure $closure): array
     {
         $reflection = new ReflectionFunction($closure);
         return static::detectionArgs($reflection);
@@ -48,7 +50,7 @@ class Depend
      * @param ReflectionFunctionAbstract $reflectionFunctionAbstract
      * @return array
      */
-    public static function detectionArgs(ReflectionFunctionAbstract $reflectionFunctionAbstract)
+    public static function detectionArgs(ReflectionFunctionAbstract $reflectionFunctionAbstract): array
     {
         if (0 >= $reflectionFunctionAbstract->getNumberOfParameters()) {
             unset($reflectionFunctionAbstract);
