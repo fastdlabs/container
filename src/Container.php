@@ -13,6 +13,7 @@ namespace FastD\Container;
 use ArrayAccess;
 use Iterator;
 use Psr\Container\ContainerInterface;
+use ReflectionException;
 
 /**
  * Class Container
@@ -100,8 +101,8 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
     /**
      * @param $name
      * @param array $arguments
-     * @return mixed
-     * @throws NotFoundException
+     * @return callable|mixed|object
+     * @throws ReflectionException
      */
     public function make($name, array $arguments = [])
     {

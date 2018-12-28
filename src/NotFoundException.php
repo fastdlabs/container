@@ -13,6 +13,10 @@ namespace FastD\Container;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 
+/**
+ * Class NotFoundException
+ * @package FastD\Container
+ */
 class NotFoundException extends RuntimeException implements NotFoundExceptionInterface
 {
 

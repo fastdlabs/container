@@ -13,7 +13,7 @@ class TestServiceProvider implements \FastD\Container\ServiceProviderInterface
      * @param \FastD\Container\Container $container
      * @return mixed
      */
-    public function register(\FastD\Container\Container $container)
+    public function register(\FastD\Container\Container $container): void
     {
         $container->add('timezone', new DateTimeZone('PRC'));
     }

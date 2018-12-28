@@ -32,13 +32,13 @@ interface InjectionInterface
     /**
      * @param string $method
      * @param bool $isStatic
-     * @return mixed
+     * @return InjectionInterface
      */
-    public function withMethod(string $method, bool $isStatic = false);
+    public function withMethod(string $method, bool $isStatic = false): InjectionInterface;
 
     /**
      * @param array $arguments
-     * @return mixed
+     * @return InjectionInterface
      */
-    public function withArguments(array $arguments);
+    public function withArguments(array $arguments): InjectionInterface;
 }

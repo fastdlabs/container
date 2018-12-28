@@ -58,7 +58,7 @@ class Injection implements InjectionInterface
      * @param string $service
      * @return Injection
      */
-    public function injectOn(string $service): Injection
+    public function injectOn($service)
     {
         $this->object = $service;
 
@@ -82,7 +82,7 @@ class Injection implements InjectionInterface
      * @param bool $isStatic
      * @return $this
      */
-    public function withMethod($name, $isStatic = false)
+    public function withMethod(string $name, bool $isStatic = false): InjectionInterface
     {
         $this->method = $name;
 
@@ -95,7 +95,7 @@ class Injection implements InjectionInterface
      * @param array $arguments
      * @return $this
      */
-    public function withArguments(array $arguments)
+    public function withArguments(array $arguments): InjectionInterface
     {
         $this->arguments = $arguments;
 
@@ -105,6 +105,7 @@ class Injection implements InjectionInterface
     /**
      * @param array $arguments
      * @return object
+     * @throws \ReflectionException
      */
     public function getInstance(array $arguments = [])
     {
@@ -113,7 +114,8 @@ class Injection implements InjectionInterface
 
     /**
      * @param array $arguments
-     * @return mixed
+     * @return callable|mixed|object
+     * @throws \ReflectionException
      */
     public function make(array $arguments = [])
     {
