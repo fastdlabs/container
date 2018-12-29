@@ -1,10 +1,10 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2016
+ * @copyright 2018
  *
- * @link      https://www.github.com/janhuang
- * @link      http://www.fast-d.cn/
+ * @link      https://www.github.com/fastdlabs
+ * @link      https://www.fastdlabs.com/
  */
 
 namespace FastD\Container;
@@ -64,13 +64,14 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      */
     public function get($name)
     {
-        $name = isset($this->map[$name]) ? $this->map[$name] :  $name;
+        $name = $this->map[$name] ??  $name;
 
         if (!isset($this->services[$name])) {
             throw new NotFoundException($name);
         }
 
         $service = $this->services[$name];
+        unset($name);
 
         if (is_object($service)) {
             // magic invoke class
@@ -100,12 +101,12 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param array $arguments
      * @return mixed
      * @throws ReflectionException
      */
-    public function make($name, array $arguments = [])
+    public function make(string $name, array $arguments = [])
     {
         if (!$this->has($name)) {
             throw new NotFoundException($name);

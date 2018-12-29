@@ -1,10 +1,10 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2016
+ * @copyright 2018
  *
- * @link      https://www.github.com/janhuang
- * @link      http://www.fast-d.cn/
+ * @link      https://www.github.com/fastdlabs
+ * @link      https://www.fastdlabs.com/
  */
 
 namespace FastD\Container;
@@ -25,9 +25,9 @@ interface InjectionInterface
 
     /**
      * @param $instance
-     * @return mixed
+     * @return InjectionInterface
      */
-    public function injectOn($instance);
+    public function injectOn(string $instance): InjectionInterface;
 
     /**
      * @param string $method

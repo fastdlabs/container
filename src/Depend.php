@@ -12,6 +12,7 @@ namespace FastD\Container;
 
 use Closure;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
@@ -27,7 +28,7 @@ class Depend
      * @param $obj
      * @param string $method
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function detectionObjectArgs($obj, string $method): array
     {
@@ -38,7 +39,7 @@ class Depend
     /**
      * @param Closure $closure
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function detectionClosureArgs(Closure $closure): array
     {

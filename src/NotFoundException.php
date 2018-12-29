@@ -1,10 +1,10 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2017
+ * @copyright 2018
  *
- * @see      https://www.github.com/janhuang
- * @see      http://www.fast-d.cn/
+ * @link      https://www.github.com/fastdlabs
+ * @link      https://www.fastdlabs.com/
  */
 
 namespace FastD\Container;

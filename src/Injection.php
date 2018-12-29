@@ -1,10 +1,10 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2016
+ * @copyright 2018
  *
- * @link      https://www.github.com/janhuang
- * @link      http://www.fast-d.cn/
+ * @link      https://www.github.com/fastdlabs
+ * @link      https://www.fastdlabs.com/
  */
 
 namespace FastD\Container;
@@ -44,9 +44,9 @@ class Injection implements InjectionInterface
     /**
      * Injection constructor.
      *
-     * @param null $service
+     * @param string $service
      */
-    public function __construct($service = null)
+    public function __construct(?string $service = null)
     {
         if (null !== $service) {
             $this->injectOn($service);
@@ -58,7 +58,7 @@ class Injection implements InjectionInterface
      * @param string $service
      * @return Injection
      */
-    public function injectOn($service)
+    public function injectOn(string $service): InjectionInterface
     {
         $this->object = $service;
 
@@ -72,7 +72,7 @@ class Injection implements InjectionInterface
     /**
      * @return Injection
      */
-    public function withConstruct()
+    public function withConstruct(): InjectionInterface
     {
         return $this->withMethod('__construct');
     }
@@ -114,7 +114,7 @@ class Injection implements InjectionInterface
 
     /**
      * @param array $arguments
-     * @return callable|mixed|object
+     * @return object
      * @throws \ReflectionException
      */
     public function make(array $arguments = [])
@@ -151,7 +151,6 @@ class Injection implements InjectionInterface
             $obj = new $obj;
         }
 
-        var_export($this->method);
         if (empty($this->method)) {
             return $obj;
         }
