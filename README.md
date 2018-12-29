@@ -46,7 +46,7 @@ $container
         new DateTime(),
     ]);
 
-$date = $container->get('date');
+$obj = $container->get('date');
 
 echo $obj->date; // (new DateTime())->format(DateTime::W3C)
 ```
