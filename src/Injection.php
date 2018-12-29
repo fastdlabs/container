@@ -46,7 +46,7 @@ class Injection implements InjectionInterface
      *
      * @param string $service
      */
-    public function __construct(?string $service = null)
+    public function __construct($service = null)
     {
         if (null !== $service) {
             $this->injectOn($service);
@@ -58,7 +58,7 @@ class Injection implements InjectionInterface
      * @param string $service
      * @return Injection
      */
-    public function injectOn(string $service): InjectionInterface
+    public function injectOn($service): InjectionInterface
     {
         $this->object = $service;
 

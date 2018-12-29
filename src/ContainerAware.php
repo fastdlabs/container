@@ -28,7 +28,7 @@ trait ContainerAware
      * @param ContainerInterface $container
      * @return $this
      */
-    public function withContainer(ContainerInterface $container): ContainerAware
+    public function withContainer(ContainerInterface $container)
     {
         $this->container = $container;
 

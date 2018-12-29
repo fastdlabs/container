@@ -27,7 +27,7 @@ interface InjectionInterface
      * @param $instance
      * @return InjectionInterface
      */
-    public function injectOn(string $instance): InjectionInterface;
+    public function injectOn($instance): InjectionInterface;
 
     /**
      * @param string $method
