@@ -1,5 +1,6 @@
 <?php
 use FastD\Container\Injection;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
@@ -8,7 +9,7 @@ use FastD\Container\Injection;
  * @link      https://www.github.com/janhuang
  * @link      https://www.fastdlabs.com
  */
-class InjectionTest extends PHPUnit_Framework_TestCase
+class InjectionTest extends TestCase
 {
     public function setUp()
     {

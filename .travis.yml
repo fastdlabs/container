@@ -1,7 +1,7 @@
 language: php
 php:
-- '7'
+- '7.4'
 
-install: composer install -vvv
+install: composer install
 
-script: phpunit
+script: bin/phpunit

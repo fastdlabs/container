@@ -7,12 +7,12 @@ Simple Container
 
 ### requirements
 
-* PHP >=7.1
+* PHP >=7.4
 
 ### installation
 
 ```
-composer require "fastd/container" -vvv
+composer require "fastd/container"
 ```
 
 ### usage
