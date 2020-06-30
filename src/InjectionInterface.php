@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2018
+ * @copyright 2020
  *
  * @link      https://www.github.com/fastdlabs
  * @link      https://www.fastdlabs.com/
@@ -19,15 +19,15 @@ interface InjectionInterface
 {
     /**
      * @param array $arguments
-     * @return mixed
+     * @return object
      */
-    public function make(array $arguments = []);
+    public function make(array $arguments = []): object ;
 
     /**
      * @param $instance
      * @return InjectionInterface
      */
-    public function injectOn($instance): InjectionInterface;
+    public function injectOn(string $instance): InjectionInterface;
 
     /**
      * @param string $method

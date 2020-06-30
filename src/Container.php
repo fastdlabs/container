@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2018
+ * @copyright 2020
  *
  * @link      https://www.github.com/fastdlabs
  * @link      https://www.fastdlabs.com/
@@ -21,22 +21,22 @@ use ReflectionException;
  *
  * @package FastD\Container
  */
-class Container implements ContainerInterface, ArrayAccess, Iterator
+class Container implements ContainerInterface, Iterator
 {
     /**
      * @var array
      */
-    protected $services = [];
+    protected array $services = [];
 
     /**
      * @var array
      */
-    protected $map = [];
+    protected array $map = [];
 
     /**
      * @var Injection[]
      */
-    protected $injections = [];
+    protected array $injections = [];
 
     /**
      * @param $name
@@ -60,9 +60,9 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
 
     /**
      * @param string $name
-     * @return mixed
+     * @return object
      */
-    public function get($name)
+    public function get($name): object
     {
         $name = $this->map[$name] ??  $name;
 
@@ -97,16 +97,16 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
             $name = $this->map[$name];
         }
 
-        return isset($this->services[$name]) ? true : false;
+        return isset($this->services[$name]);
     }
 
     /**
      * @param string $name
      * @param array $arguments
-     * @return mixed
+     * @return object
      * @throws ReflectionException
      */
-    public function make(string $name, array $arguments = [])
+    public function make(string $name, array $arguments = []): object
     {
         if (!$this->has($name)) {
             throw new NotFoundException($name);
@@ -123,13 +123,11 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
 
     /**
      * @param ServiceProviderInterface $serviceProvider
-     * @return Container
+     * @return void
      */
-    public function register(ServiceProviderInterface $serviceProvider): Container
+    public function register(ServiceProviderInterface $serviceProvider): void
     {
         $serviceProvider->register($this);
-
-        return $this;
     }
 
     /**
@@ -145,7 +143,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      *                      The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->has($offset);
     }
@@ -160,7 +158,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): object
     {
         return $this->get($offset);
     }
@@ -178,7 +176,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @return void
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->add($offset, $value);
     }
@@ -193,7 +191,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @return void
      * @since 5.0.0
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         if (isset($this->map[$offset])) {
             unset($this->map[$offset]);
@@ -210,7 +208,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @return mixed Can return any type.
      * @since 5.0.0
      */
-    public function current()
+    public function current(): object
     {
         return current($this->services);
     }
@@ -221,7 +219,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @return void Any returned value is ignored.
      * @since 5.0.0
      */
-    public function next()
+    public function next(): void
     {
         next($this->services);
     }
@@ -232,7 +230,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @return mixed scalar on success, or null on failure.
      * @since 5.0.0
      */
-    public function key()
+    public function key(): string
     {
         return key($this->services);
     }
@@ -244,7 +242,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * Returns true on success or false on failure.
      * @since 5.0.0
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->services[$this->key()]);
     }
@@ -255,7 +253,7 @@ class Container implements ContainerInterface, ArrayAccess, Iterator
      * @return void Any returned value is ignored.
      * @since 5.0.0
      */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->services);
     }

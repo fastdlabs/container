@@ -1,10 +1,10 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2016
+ * @copyright 2020
  *
  * @link      https://www.github.com/janhuang
- * @link      http://www.fast-d.cn/
+ * @link      https://www.fastdlabs.com
  */
 
 namespace FastD\Container;
@@ -18,11 +18,11 @@ use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 /**
- * Class DependDetection
+ * Class Reflection
  *
  * @package FastD\Container
  */
-class Depend
+class Reflection
 {
     /**
      * @param $obj

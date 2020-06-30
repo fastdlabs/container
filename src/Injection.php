@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2018
+ * @copyright 2020
  *
  * @link      https://www.github.com/fastdlabs
  * @link      https://www.fastdlabs.com/
@@ -10,6 +10,7 @@
 namespace FastD\Container;
 
 
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
 /**
@@ -19,52 +20,47 @@ use ReflectionClass;
  */
 class Injection implements InjectionInterface
 {
-    use ContainerAware;
-
-    /**
-     * @var mixed
-     */
-    protected $object;
+    protected ContainerInterface $container;
 
     /**
      * @var string
      */
-    protected $method;
+    protected string $object;
+
+    /**
+     * @var string
+     */
+    protected string $method;
 
     /**
      * @var bool
      */
-    protected $isStatic = false;
+    protected bool $isStatic = false;
 
     /**
      * @var array
      */
-    protected $arguments = [];
+    protected array $arguments = [];
 
     /**
      * Injection constructor.
      *
-     * @param string $service
+     * @param ContainerInterface $container
      */
-    public function __construct($service = null)
+    public function __construct(ContainerInterface $container)
     {
-        if (null !== $service) {
-            $this->injectOn($service);
-            $this->withConstruct();
-        }
+        $this->container = $container;
     }
 
     /**
      * @param string $service
      * @return Injection
      */
-    public function injectOn($service): InjectionInterface
+    public function injectOn(string $service): InjectionInterface
     {
         $this->object = $service;
 
-        $this->arguments = [];
-        $this->isStatic = false;
-        $this->method = null;
+        $this->withConstruct();
 
         return $this;
     }
@@ -107,7 +103,7 @@ class Injection implements InjectionInterface
      * @return object
      * @throws \ReflectionException
      */
-    public function getInstance(array $arguments = [])
+    public function newInstance(array $arguments = []): object
     {
         return (new ReflectionClass($this->object))->newInstanceArgs($arguments);
     }
@@ -117,13 +113,13 @@ class Injection implements InjectionInterface
      * @return object
      * @throws \ReflectionException
      */
-    public function make(array $arguments = [])
+    public function make(array $arguments = []): object
     {
         if (empty($this->arguments)) {
             if (is_callable($this->object)) {
-                $injections = Depend::detectionClosureArgs($this->object);
+                $injections = Reflection::detectionClosureArgs($this->object);
             } else {
-                $injections = Depend::detectionObjectArgs($this->object, $this->method);
+                $injections = Reflection::detectionObjectArgs($this->object, $this->method);
             }
 
             foreach ($injections as $injection) {
@@ -142,7 +138,7 @@ class Injection implements InjectionInterface
         }
 
         if ('__construct' === $this->method) {
-            return $this->getInstance($arguments);
+            return $this->newInstance($arguments);
         }
 
         $obj = $this->object;

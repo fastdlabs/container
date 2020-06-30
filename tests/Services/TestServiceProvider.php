@@ -5,7 +5,7 @@
  * @copyright 2017
  *
  * @see      https://www.github.com/janhuang
- * @see      http://www.fast-d.cn/
+ * @see      https://www.fastdlabs.com
  */
 class TestServiceProvider implements \FastD\Container\ServiceProviderInterface
 {

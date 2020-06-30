@@ -3,10 +3,10 @@ use FastD\Container\Injection;
 
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2016
+ * @copyright 2020
  *
  * @link      https://www.github.com/janhuang
- * @link      http://www.fast-d.cn/
+ * @link      https://www.fastdlabs.com
  */
 class InjectionTest extends PHPUnit_Framework_TestCase
 {
