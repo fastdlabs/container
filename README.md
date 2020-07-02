@@ -23,8 +23,8 @@ composer require "fastd/container"
 ```php
 $container = new FastD\Container\Container();
 $container->add('timezone', DateTimeZone::class);
-list(, $callback, ) = $this->container->get('timezone');
-$this->assertEquals(DateTimeZone::class, $callback);
+$timezone = $this->container->get('timezone');
+$this->assertInstanceOf(DateTimeZone::class, $timezone);
 ```
 
 ### Testing
