@@ -19,18 +19,32 @@ class ContainerTest extends TestCase
     /**
      * @var Container
      */
-    protected $container;
+    protected Container $container;
 
     public function setUp()
     {
         $this->container = new FastD\Container\Container();
     }
 
-    public function testContainerClassString()
+    public function testAddClass()
     {
-        $this->container->add('timezone', DateTimeZone::class);
-        list(, $callback, ) = $this->container->get('timezone');
-        $this->assertEquals(DateTimeZone::class, $callback);
+        $this->container->add('container', Container::class);
+        $container = $this->container->get('container');
+        $this->assertInstanceOf(Container::class, $container);
     }
 
+    public function testAddObj()
+    {
+        $this->container->add('container', new Container());
+        $container = $this->container->get('container');
+        $this->assertInstanceOf(Container::class, $container);
+    }
+
+    public function testAddClosure()
+    {
+        $this->container->add('closure', function () {return "OK";});
+        $closure = $this->container->get('closure');
+        echo $closure();
+        $this->expectOutputString('OK');
+    }
 }

@@ -32,22 +32,31 @@ class Container implements ContainerInterface, Iterator
     protected array $map = [];
 
     /**
+     * 实例数组
+     *
+     * @var array
+     */
+    protected array $instances = [];
+
+    /**
      * @param $name
      * @param $service
      * @param array
      * @return Container
      */
-    public function add(string $name, $service, array $arguments = []): Container
+    public function add(string $name, $service): Container
     {
         if (!($service instanceof Closure)) {
+            echo gettype($service);
             if (is_object($service)) {
                 $this->map[get_class($service)] = $name;
+                $this->instances[$name] = $service;
             } elseif (is_string($service)) {
                 $this->map[$service] = $name;
             }
         }
 
-        $this->services[$name] = [gettype($service), $service, $arguments,];
+        $this->services[$name] = $service;
 
         return $this;
     }
@@ -67,9 +76,9 @@ class Container implements ContainerInterface, Iterator
 
     /**
      * @param string $name
-     * @return array
+     * @return object
      */
-    public function get($name): array
+    public function get($name)
     {
         $name = $this->map[$name] ?? $name;
 
@@ -77,7 +86,19 @@ class Container implements ContainerInterface, Iterator
             throw new NotFoundException($name);
         }
 
-        return $this->services[$name];
+        if (isset($this->instances[$name])) {
+            return $this->instances[$name];
+        }
+
+        $service  = $this->services[$name];
+
+        if (is_string($service)) {
+            $service = new $service;
+        }
+
+        $this->instances[$name] = $service;
+
+        return $service;
     }
 
 
