@@ -30,7 +30,7 @@ class ContainerTest extends TestCase
     {
         $this->container->add('timezone', DateTimeZone::class);
         print_r($this->container);
-        list($type, $callback, $args) = $this->container->get('timezone');
+        list(, $callback, ) = $this->container->get('timezone');
         $this->assertEquals(DateTimeZone::class, $callback);
     }
 
