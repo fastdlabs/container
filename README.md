@@ -1,7 +1,10 @@
 # Container
 
 ![Building](https://api.travis-ci.org/JanHuang/container.svg?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/fastd/container/v/stable)](https://packagist.org/packages/fastd/container) [![Total Downloads](https://poser.pugx.org/fastd/container/downloads)](https://packagist.org/packages/fastd/container) [![Latest Unstable Version](https://poser.pugx.org/fastd/container/v/unstable)](https://packagist.org/packages/fastd/container) [![License](https://poser.pugx.org/fastd/container/license)](https://packagist.org/packages/fastd/container)
+[![Latest Stable Version](https://poser.pugx.org/fastd/container/v/stable)](https://packagist.org/packages/fastd/container) 
+[![Total Downloads](https://poser.pugx.org/fastd/container/downloads)](https://packagist.org/packages/fastd/container) 
+[![Latest Unstable Version](https://poser.pugx.org/fastd/container/v/unstable)](https://packagist.org/packages/fastd/container) 
+[![License](https://poser.pugx.org/fastd/container/license)](https://packagist.org/packages/fastd/container)
 
 Simple Container
 

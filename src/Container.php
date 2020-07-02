@@ -10,11 +10,9 @@
 namespace FastD\Container;
 
 
-use ArrayAccess;
 use Closure;
 use Iterator;
 use Psr\Container\ContainerInterface;
-use ReflectionException;
 
 /**
  * Class Container
@@ -34,16 +32,12 @@ class Container implements ContainerInterface, Iterator
     protected array $map = [];
 
     /**
-     * @var Injection[]
-     */
-    protected array $injections = [];
-
-    /**
      * @param $name
      * @param $service
+     * @param array
      * @return Container
      */
-    public function add($name, $service): Container
+    public function add(string $name, $service, array $arguments = []): Container
     {
         if (!($service instanceof Closure)) {
             if (is_object($service)) {
@@ -53,38 +47,9 @@ class Container implements ContainerInterface, Iterator
             }
         }
 
-        $this->services[$name] = $service;
+        $this->services[$name] = [gettype($service), $service, $arguments,];
 
         return $this;
-    }
-
-    /**
-     * @param string $name
-     * @return object
-     */
-    public function get($name): object
-    {
-        $name = $this->map[$name] ??  $name;
-
-        if (!isset($this->services[$name])) {
-            throw new NotFoundException($name);
-        }
-
-        $service = $this->services[$name];
-        unset($name);
-
-        if (is_object($service)) {
-            // magic invoke class
-            if (method_exists($service, 'bindTo') && is_callable($service)) {
-                return $service($this);
-            }
-            // anonymous function
-            if (is_callable($service)) {
-                return $service;
-            }
-        }
-
-        return $service;
     }
 
     /**
@@ -102,32 +67,27 @@ class Container implements ContainerInterface, Iterator
 
     /**
      * @param string $name
-     * @param array $arguments
-     * @return object
-     * @throws ReflectionException
+     * @return array
      */
-    public function make(string $name, array $arguments = []): object
+    public function get($name): array
     {
-        if (!$this->has($name)) {
+        $name = $this->map[$name] ?? $name;
+
+        if (!isset($this->services[$name])) {
             throw new NotFoundException($name);
         }
 
-        if (!isset($this->injections[$name])) {
-            $service = $this->get($name);
-
-            $this->injections[$name] = (new Injection($service))->withContainer($this);
-        }
-
-        return $this->injections[$name]->make($arguments);
+        return $this->services[$name];
     }
 
+
     /**
-     * @param ServiceProviderInterface $serviceProvider
+     * @param ServiceProviderInterface $registrar
      * @return void
      */
-    public function register(ServiceProviderInterface $serviceProvider): void
+    public function register(ServiceProviderInterface $registrar): void
     {
-        $serviceProvider->register($this);
+        $registrar->register($this);
     }
 
     /**
