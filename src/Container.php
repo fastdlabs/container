@@ -47,7 +47,6 @@ class Container implements ContainerInterface, Iterator
     public function add(string $name, $service): Container
     {
         if (!($service instanceof Closure)) {
-            echo gettype($service);
             if (is_object($service)) {
                 $this->map[get_class($service)] = $name;
                 $this->instances[$name] = $service;
