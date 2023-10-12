@@ -61,25 +61,25 @@ class Container implements ContainerInterface, Iterator
     }
 
     /**
-     * @param string $name
+     * @param string $id
      * @return bool
      */
-    public function has($name): bool
+    public function has(string $id): bool
     {
-        if (isset($this->map[$name])) {
-            $name = $this->map[$name];
+        if (isset($this->map[$id])) {
+            $id = $this->map[$id];
         }
 
-        return isset($this->services[$name]);
+        return isset($this->services[$id]);
     }
 
     /**
-     * @param string $name
-     * @return object
+     * @param string $id
+     * @return mixed
      */
-    public function get($name)
+    public function get(string $id)
     {
-        $name = $this->map[$name] ?? $name;
+        $name = $this->map[$id] ?? $id;
 
         if (!isset($this->services[$name])) {
             throw new NotFoundException($name);
