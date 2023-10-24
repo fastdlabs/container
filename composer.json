@@ -1,28 +1,31 @@
 {
-    "name": "fastd/container",
-    "description": "FastD Container",
-    "type": "library",
-    "keywords": ["Container", "FastD"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "janhuang",
-            "email": "bboyjanhuang@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=7.4",
-        "psr/container": "^2.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "FastD\\Container\\": "src"
-        }
-    },
-    "config": {
-        "bin-dir": "bin"
+  "name": "fastd/container",
+  "description": "FastD Container",
+  "type": "library",
+  "keywords": [
+    "Container",
+    "FastD"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "janhuang",
+      "email": "bboyjanhuang@gmail.com"
     }
+  ],
+  "require": {
+    "php": "^7.4 || ^8.0",
+    "psr/container": "^2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "FastD\\Container\\": "src"
+    }
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
 }

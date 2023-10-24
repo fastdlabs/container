@@ -21,28 +21,28 @@ class ContainerTest extends TestCase
      */
     protected Container $container;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->container = new FastD\Container\Container();
     }
 
     public function testAddClass()
     {
-        $this->container->add('container', Container::class);
+        $this->container->set('container', Container::class);
         $container = $this->container->get('container');
         $this->assertInstanceOf(Container::class, $container);
     }
 
     public function testAddObj()
     {
-        $this->container->add('container', new Container());
+        $this->container->set('container', new Container());
         $container = $this->container->get('container');
         $this->assertInstanceOf(Container::class, $container);
     }
 
     public function testAddClosure()
     {
-        $this->container->add('closure', function () {return "OK";});
+        $this->container->set('closure', function () {return "OK";});
         $closure = $this->container->get('closure');
         echo $closure();
         $this->expectOutputString('OK');

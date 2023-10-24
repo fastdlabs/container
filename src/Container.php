@@ -39,23 +39,22 @@ class Container implements ContainerInterface, Iterator
     protected array $instances = [];
 
     /**
-     * @param $name
+     * @param $id
      * @param $service
-     * @param array
      * @return Container
      */
-    public function add(string $name, $service): Container
+    public function set(string $id, $service): Container
     {
         if (!($service instanceof Closure)) {
             if (is_object($service)) {
-                $this->map[get_class($service)] = $name;
-                $this->instances[$name] = $service;
+                $this->map[get_class($service)] = $id;
+                $this->instances[$id] = $service;
             } elseif (is_string($service)) {
-                $this->map[$service] = $name;
+                $this->map[$service] = $id;
             }
         }
 
-        $this->services[$name] = $service;
+        $this->services[$id] = $service;
 
         return $this;
     }
@@ -100,6 +99,10 @@ class Container implements ContainerInterface, Iterator
         return $service;
     }
 
+    public function remove(string $id): void
+    {
+        $this->offsetUnset($id);
+    }
 
     /**
      * @param ServiceProviderInterface $registrar
@@ -138,7 +141,7 @@ class Container implements ContainerInterface, Iterator
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset): object
+    public function offsetGet($offset)
     {
         return $this->get($offset);
     }
@@ -158,7 +161,7 @@ class Container implements ContainerInterface, Iterator
      */
     public function offsetSet($offset, $value): void
     {
-        $this->add($offset, $value);
+        $this->set($offset, $value);
     }
 
     /**
@@ -188,7 +191,7 @@ class Container implements ContainerInterface, Iterator
      * @return mixed Can return any type.
      * @since 5.0.0
      */
-    public function current(): object
+    public function current()
     {
         return current($this->services);
     }
