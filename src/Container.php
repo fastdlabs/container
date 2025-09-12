@@ -43,7 +43,7 @@ class Container implements ContainerInterface, Iterator
      * @param $service
      * @return Container
      */
-    public function set(string $id, $service): Container
+    public function add(string $id, $service): Container
     {
         if (!($service instanceof Closure)) {
             if (is_object($service)) {
