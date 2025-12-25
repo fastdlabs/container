@@ -1,14 +1,7 @@
 <?php
-/**
- * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2020
- *
- * @link      https://www.github.com/fastdlabs
- * @link      https://www.fastdlabs.com/
- */
+declare(strict_types=1);
 
 namespace FastD\Container;
-
 
 use Closure;
 use Iterator;
@@ -39,11 +32,20 @@ class Container implements ContainerInterface, Iterator
     protected array $instances = [];
 
     /**
-     * @param $id
+     * @param ServiceProviderInterface $registrar
+     * @return void
+     */
+    public function register(ServiceProviderInterface $registrar): void
+    {
+        $registrar->register($this);
+    }
+
+    /**
+     * @param string $id
      * @param $service
      * @return Container
      */
-    public function add(string $id, $service): Container
+    public function add(string $id, mixed $service): Container
     {
         if (!($service instanceof Closure)) {
             if (is_object($service)) {
@@ -76,7 +78,7 @@ class Container implements ContainerInterface, Iterator
      * @param string $id
      * @return mixed
      */
-    public function get(string $id)
+    public function get(string $id): mixed
     {
         $name = $this->map[$id] ?? $id;
 
@@ -105,15 +107,6 @@ class Container implements ContainerInterface, Iterator
     }
 
     /**
-     * @param ServiceProviderInterface $registrar
-     * @return void
-     */
-    public function register(ServiceProviderInterface $registrar): void
-    {
-        $registrar->register($this);
-    }
-
-    /**
      * Whether a offset exists
      *
      * @link  http://php.net/manual/en/arrayaccess.offsetexists.php
@@ -126,7 +119,7 @@ class Container implements ContainerInterface, Iterator
      *                      The return value will be casted to boolean if non-boolean was returned.
      * @since 5.0.0
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return $this->has($offset);
     }
@@ -141,7 +134,7 @@ class Container implements ContainerInterface, Iterator
      * @return mixed Can return all value types.
      * @since 5.0.0
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
@@ -159,9 +152,9 @@ class Container implements ContainerInterface, Iterator
      * @return void
      * @since 5.0.0
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->set($offset, $value);
+        $this->add($offset, $value);
     }
 
     /**
@@ -174,7 +167,7 @@ class Container implements ContainerInterface, Iterator
      * @return void
      * @since 5.0.0
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         if (isset($this->map[$offset])) {
             unset($this->map[$offset]);
@@ -191,7 +184,7 @@ class Container implements ContainerInterface, Iterator
      * @return mixed Can return any type.
      * @since 5.0.0
      */
-    public function current()
+    public function current(): mixed
     {
         return current($this->services);
     }
@@ -213,7 +206,7 @@ class Container implements ContainerInterface, Iterator
      * @return mixed scalar on success, or null on failure.
      * @since 5.0.0
      */
-    public function key(): string
+    public function key(): mixed
     {
         return key($this->services);
     }

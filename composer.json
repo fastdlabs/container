@@ -14,7 +14,7 @@
     }
   ],
   "require": {
-    "php": "^7.4 || ^8.0",
+    "php": ">=8.2",
     "psr/container": "^2.0"
   },
   "require-dev": {
@@ -24,8 +24,5 @@
     "psr-4": {
       "FastD\\Container\\": "src"
     }
-  },
-  "config": {
-    "bin-dir": "bin"
   }
 }

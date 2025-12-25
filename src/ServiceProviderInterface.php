@@ -1,14 +1,7 @@
 <?php
-/**
- * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2020
- *
- * @link      https://www.github.com/fastdlabs
- * @link      https://www.fastdlabs.com/
- */
+declare(strict_types=1);
 
 namespace FastD\Container;
-
 
 /**
  * Interface ServiceProviderInterface
