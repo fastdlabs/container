@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace FastD\Container;
@@ -7,103 +8,91 @@ use Closure;
 use Iterator;
 use Psr\Container\ContainerInterface;
 
-/**
- * Class Container
- *
- * @package FastD\Container
- */
 class Container implements ContainerInterface, Iterator
 {
-    /**
-     * @var array
-     */
     protected array $services = [];
 
-    /**
-     * @var array
-     */
-    protected array $map = [];
-
-    /**
-     * 实例数组
-     *
-     * @var array
-     */
     protected array $instances = [];
 
-    /**
-     * @param ServiceProviderInterface $registrar
-     * @return void
-     */
     public function register(ServiceProviderInterface $registrar): void
     {
         $registrar->register($this);
     }
 
-    /**
-     * @param string $id
-     * @param $service
-     * @return Container
-     */
     public function add(string $id, mixed $service): Container
     {
-        if (!($service instanceof Closure)) {
-            if (is_object($service)) {
-                $this->map[get_class($service)] = $id;
-                $this->instances[$id] = $service;
-            } elseif (is_string($service)) {
-                $this->map[$service] = $id;
+        $type = match (true) {
+            is_null($service)           => 'null',
+            is_bool($service)           => 'boolean',
+            is_int($service)            => 'integer',
+            is_float($service)          => 'double',
+            is_array($service)          => 'array',
+            $service instanceof Closure => 'closure',
+            is_object($service)         => 'object',
+            is_callable($service)       => 'callable',
+            class_exists($service)      => 'class',
+            is_string($service)         => 'string',
+            default                     => gettype($service)
+        };
+
+        if ($type == 'array') {
+            if ($this->has($id)) {
+                $service = array_merge($this->services[$id]['service'], $service);
             }
         }
 
-        $this->services[$id] = $service;
+        $this->services[$id] = [
+            'type' => $type,
+            'service' => $service,
+        ];
+
+        if ($type == 'object') {
+            $this->instances[$id] = $service;
+        }
 
         return $this;
     }
 
-    /**
-     * @param string $id
-     * @return bool
-     */
     public function has(string $id): bool
     {
-        if (isset($this->map[$id])) {
-            $id = $this->map[$id];
-        }
-
         return isset($this->services[$id]);
     }
 
-    /**
-     * @param string $id
-     * @return mixed
-     */
     public function get(string $id): mixed
     {
-        $name = $this->map[$id] ?? $id;
-
-        if (!isset($this->services[$name])) {
-            throw new NotFoundException($name);
+        if (!isset($this->services[$id])) {
+            throw new NotFoundException(sprintf('Container item "%s" not found.', $id));
         }
 
-        if (isset($this->instances[$name])) {
-            return $this->instances[$name];
-        }
-
-        $service  = $this->services[$name];
-
-        if (is_string($service)) {
-            $service = new $service;
-        }
-
-        $this->instances[$name] = $service;
-
-        return $service;
+        return $this->services[$id];
     }
 
-    public function remove(string $id): void
+    public function got(string $id, array $args = []): mixed
     {
-        $this->offsetUnset($id);
+        if (isset($this->instances[$id])) {
+            return $this->instances[$id];
+        }
+
+        $service = $this->get($id);
+
+        $this->instances[$id] = match ($service['type']) {
+            'closure', 'callable' => call_user_func_array($service['service'], $args),
+            'object', 'class' => new $service['service'](...$args),
+            default => $service['service']
+        };
+
+        return $this->instances[$id];
+    }
+
+    public function clear(string $id): void
+    {
+        if (array_key_exists($id, $this->instances)) {
+            unset($this->instances[$id]);
+        }
+
+        if (array_key_exists($id, $this->services)) {
+            unset($this->services[$id]);
+        }
     }
 
     /**
@@ -169,13 +158,7 @@ class Container implements ContainerInterface, Iterator
      */
     public function offsetUnset(mixed $offset): void
     {
-        if (isset($this->map[$offset])) {
-            unset($this->map[$offset]);
-        }
-
-        if (isset($this->services[$offset])) {
-            unset($this->services[$offset]);
-        }
+        $this->clear($offset);
     }
 
     /**

@@ -2,15 +2,12 @@
   "name": "fastd/container",
   "description": "FastD Container",
   "type": "library",
-  "keywords": [
-    "Container",
-    "FastD"
-  ],
+  "keywords": ["FastD", "container"],
   "license": "MIT",
   "authors": [
     {
       "name": "janhuang",
-      "email": "bboyjanhuang@gmail.com"
+      "email": "384099566@qq.com"
     }
   ],
   "require": {
