@@ -1,4 +1,4 @@
-# Container
+# FastD Container
 
 ![Building](https://api.travis-ci.org/JanHuang/container.svg?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/fastd/container/v/stable)](https://packagist.org/packages/fastd/container) 
@@ -6,44 +6,109 @@
 [![Latest Unstable Version](https://poser.pugx.org/fastd/container/v/unstable)](https://packagist.org/packages/fastd/container) 
 [![License](https://poser.pugx.org/fastd/container/license)](https://packagist.org/packages/fastd/container)
 
-简单的PHP对象容器，DI组件已经独立维护: [di](https://github.com/fastdlabs/DI)
+FastD Container 是一个轻量级但功能强大的PHP依赖注入容器，完全实现PSR-11标准接口。它提供了简洁易用的API来管理应用程序中的服务依赖关系，支持多种服务类型、自动数组合并、单例模式和服务提供者机制。
 
-### Requirements
+## 文档
 
-* PHP >=7.2
+📚 详细的文档请查看 [/docs](./docs) 目录：
 
-### Installation
+- [项目概述](./docs/overview.md) - 项目介绍、特性说明、架构设计
+- [API 参考](./docs/api/) - 完整的API文档和使用指南  
+- [安装与使用](./docs/installation.md) - 安装配置、快速入门、最佳实践
 
+## 环境要求
+
+- **PHP版本**: >= 8.2 (推荐使用最新稳定版)
+- **依赖标准**: PSR-11 Container Interface ^2.0
+- **构建工具**: Composer 2.x
+- **测试框架**: PHPUnit ^9.0 (仅开发环境)
+
+## 安装
+
+使用Composer安装：
+
+```bash
+composer require fastd/container
 ```
-composer require "fastd/container"
-```
 
-### Usage
+## 基础使用
+
+### 1. 创建容器实例
 
 ```php
-$container = new FastD\Container\Container();
-$container->add('timezone', DateTimeZone::class);
-$timezone = $this->container->get('timezone');
-$this->assertInstanceOf(DateTimeZone::class, $timezone);
+use FastD\Container\Container;
+
+$container = new Container();
 ```
 
-### Testing
+### 2. 注册服务
 
 ```php
-bin/phpunit
+// 注册类服务
+$container->add('logger', Monolog\Logger::class);
+
+// 注册闭包服务
+$container->add('database', function() {
+    return new PDO('sqlite::memory:');
+});
+
+// 注册配置数组
+$container->add('config', [
+    'app_name' => 'My Application',
+    'debug' => true
+]);
 ```
 
-### 贡献
+### 3. 获取服务实例
 
-非常欢迎感兴趣，愿意参与其中，共同打造更好PHP生态，Swoole生态的开发者。
+```php
+// 获取服务实例 (推荐使用 got 方法)
+$logger = $container->got('logger');
+$config = $container->got('config');
 
-如果你乐于此，却又不知如何开始，可以试试下面这些事情：
+// 检查服务是否存在
+if ($container->has('logger')) {
+    $logger = $container->got('logger');
+}
+```
 
-* 在你的系统中使用，将遇到的问题 [反馈](https://github.com/JanHuang/fastD/issues)。
-* 有更好的建议？欢迎联系 [bboyjanhuang@gmail.com](mailto:bboyjanhuang@gmail.com) 或 [新浪微博:编码侠](http://weibo.com/ecbboyjan)。
+### 4. 数组访问支持
 
-### 联系
+```php
+// 使用数组语法操作容器
+$container['cache'] = RedisCache::class;
 
-如果你在使用中遇到问题，请联系: [bboyjanhuang@gmail.com](mailto:bboyjanhuang@gmail.com). 微博: [编码侠](http://weibo.com/ecbboyjan)
+if (isset($container['cache'])) {
+    $cache = $container['cache'];
+}
+
+unset($container['cache']);
+```
+
+更多使用示例请参考 [完整文档](./docs/installation.md)。
+
+## 测试
+
+运行测试套件：
+
+```bash
+vendor/bin/phpunit
+```
+
+## 贡献
+
+欢迎任何形式的贡献！您可以通过以下方式参与项目：
+
+- 🐛 [报告问题](https://github.com/JanHuang/container/issues)
+- 💡 提交功能建议
+- 🔧 贡献代码和文档
+- ⭐ Star项目支持
+
+请确保在提交Pull Request前：
+
+1. 编写相应的测试用例
+2. 确保所有测试通过
+3. 遵循项目的代码风格
+4. 更新相关文档
 
 ## License MIT

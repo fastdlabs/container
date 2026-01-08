@@ -22,23 +22,15 @@ class Container implements ContainerInterface, Iterator
     public function add(string $id, mixed $service): Container
     {
         $type = match (true) {
-            is_null($service)           => 'null',
-            is_bool($service)           => 'boolean',
-            is_int($service)            => 'integer',
-            is_float($service)          => 'double',
-            is_array($service)          => 'array',
-            $service instanceof Closure => 'closure',
-            is_object($service)         => 'object',
-            is_callable($service)       => 'callable',
-            class_exists($service)      => 'class',
-            is_string($service)         => 'string',
-            default                     => gettype($service)
+            $service instanceof Closure => 'closure',  // closure 是特殊的可调用对象
+            is_object($service) => 'object',
+            is_string($service) && class_exists($service) => 'class',  // 类名字符串
+            is_callable($service) => 'callable',  // 其他可调用类型
+            default => gettype($service)
         };
 
-        if ($type == 'array') {
-            if ($this->has($id)) {
-                $service = array_merge($this->services[$id]['service'], $service);
-            }
+        if ($type == 'array' && $this->has($id)) {
+            $service = array_merge($this->services[$id]['service'], $service);
         }
 
         $this->services[$id] = [
@@ -67,7 +59,7 @@ class Container implements ContainerInterface, Iterator
         return $this->services[$id];
     }
 
-    public function got(string $id, array $args = []): mixed
+    public function got(string $id, ...$parameters): mixed
     {
         if (isset($this->instances[$id])) {
             return $this->instances[$id];
@@ -76,8 +68,8 @@ class Container implements ContainerInterface, Iterator
         $service = $this->get($id);
 
         $this->instances[$id] = match ($service['type']) {
-            'closure', 'callable' => call_user_func_array($service['service'], $args),
-            'object', 'class' => new $service['service'](...$args),
+            'closure', 'callable' => call_user_func_array($service['service'], $parameters),
+            'object', 'class' => new $service['service'](...$parameters),
             default => $service['service']
         };
 
