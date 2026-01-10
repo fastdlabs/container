@@ -2,6 +2,7 @@
   "name": "fastd/container",
   "description": "FastD Container",
   "type": "library",
+  "minimum-stability": "dev",
   "keywords": ["FastD", "container"],
   "license": "MIT",
   "authors": [
