@@ -50,22 +50,17 @@ class Container implements ContainerInterface, Iterator
         return isset($this->services[$id]);
     }
 
-    public function get(string $id): mixed
-    {
-        if (!isset($this->services[$id])) {
-            throw new NotFoundException(sprintf('Container item "%s" not found.', $id));
-        }
-
-        return $this->services[$id];
-    }
-
-    public function got(string $id, ...$parameters): mixed
+    public function get(string $id, ...$parameters): mixed
     {
         if (isset($this->instances[$id])) {
             return $this->instances[$id];
         }
 
-        $service = $this->get($id);
+        if (!isset($this->services[$id])) {
+            throw new NotFoundException(sprintf('Container item "%s" not found.', $id));
+        }
+
+        $service = $this->services[$id];
 
         $this->instances[$id] = match ($service['type']) {
             'closure', 'callable' => call_user_func_array($service['service'], $parameters),
