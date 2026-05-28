@@ -62,13 +62,13 @@ $container->add('config', [
 ### 3. 获取服务实例
 
 ```php
-// 获取服务实例 (推荐使用 got 方法)
-$logger = $container->got('logger');
-$config = $container->got('config');
+// 获取服务实例 (PSR-11 标准方法)
+$logger = $container->get('logger');
+$config = $container->get('config');
 
 // 检查服务是否存在
 if ($container->has('logger')) {
-    $logger = $container->got('logger');
+    $logger = $container->get('logger');
 }
 ```
 
