@@ -6,6 +6,9 @@ namespace FastD\Container;
 
 use Closure;
 use Iterator;
+use ReflectionClass;
+use ReflectionNamedType;
+use RuntimeException;
 use Psr\Container\ContainerInterface;
 
 class Container implements ContainerInterface, Iterator
@@ -69,6 +72,70 @@ class Container implements ContainerInterface, Iterator
         };
 
         return $this->instances[$id];
+    }
+
+    /**
+     * 构造器注入：按参数类型从容器解析依赖，未注册的类递归构建。
+     */
+    public function make(string $class): object
+    {
+        return $this->build($class, []);
+    }
+
+    private function build(string $class, array $resolving): object
+    {
+        if ($this->has($class)) {
+            return $this->get($class);
+        }
+
+        if (!class_exists($class)) {
+            throw new RuntimeException(sprintf('Container cannot make unknown class "%s".', $class));
+        }
+
+        if (in_array($class, $resolving, true)) {
+            throw new RuntimeException(sprintf(
+                'Circular dependency detected: %s.',
+                implode(' -> ', [...$resolving, $class])
+            ));
+        }
+
+        $resolving[] = $class;
+        $reflection = new ReflectionClass($class);
+        $constructor = $reflection->getConstructor();
+
+        if ($constructor === null || $constructor->getNumberOfParameters() === 0) {
+            return $reflection->newInstance();
+        }
+
+        $arguments = [];
+
+        foreach ($constructor->getParameters() as $parameter) {
+            $type = $parameter->getType();
+
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+                $name = $type->getName();
+                $arguments[] = $this->has($name) ? $this->get($name) : $this->build($name, $resolving);
+                continue;
+            }
+
+            if ($parameter->isDefaultValueAvailable()) {
+                $arguments[] = $parameter->getDefaultValue();
+                continue;
+            }
+
+            if ($parameter->allowsNull()) {
+                $arguments[] = null;
+                continue;
+            }
+
+            throw new RuntimeException(sprintf(
+                'Cannot resolve parameter $%s of %s::__construct().',
+                $parameter->getName(),
+                $class
+            ));
+        }
+
+        return $reflection->newInstanceArgs($arguments);
     }
 
     public function clear(string $id): void
