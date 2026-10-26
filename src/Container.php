@@ -76,13 +76,10 @@ class Container implements ContainerInterface, Iterator
 
     /**
      * 构造器注入：按参数类型从容器解析依赖，未注册的类递归构建。
+     *
+     * @param array<string> $resolving 内部递归使用，用于循环依赖检测
      */
-    public function make(string $class): object
-    {
-        return $this->build($class, []);
-    }
-
-    private function build(string $class, array $resolving): object
+    public function make(string $class, array $resolving = []): object
     {
         if ($this->has($class)) {
             return $this->get($class);
@@ -114,7 +111,7 @@ class Container implements ContainerInterface, Iterator
 
             if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
                 $name = $type->getName();
-                $arguments[] = $this->has($name) ? $this->get($name) : $this->build($name, $resolving);
+                $arguments[] = $this->has($name) ? $this->get($name) : $this->make($name, $resolving);
                 continue;
             }
 
