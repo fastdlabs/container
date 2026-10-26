@@ -6,6 +6,9 @@ namespace FastD\Container;
 
 use Closure;
 use Iterator;
+use ReflectionClass;
+use ReflectionNamedType;
+use RuntimeException;
 use Psr\Container\ContainerInterface;
 
 class Container implements ContainerInterface, Iterator
@@ -69,6 +72,74 @@ class Container implements ContainerInterface, Iterator
         };
 
         return $this->instances[$id];
+    }
+
+    /**
+     * 构造器注入：按参数类型从容器解析依赖，未注册的类递归 make。
+     */
+    public function make(string $class): object
+    {
+        if ($this->has($class)) {
+            return $this->get($class);
+        }
+
+        if (!class_exists($class)) {
+            throw new RuntimeException(sprintf('Container cannot make unknown class "%s".', $class));
+        }
+
+        $reflection = new ReflectionClass($class);
+        $constructor = $reflection->getConstructor();
+
+        if ($constructor === null || $constructor->getNumberOfParameters() === 0) {
+            return $reflection->newInstance();
+        }
+
+        $arguments = [];
+
+        foreach ($constructor->getParameters() as $parameter) {
+            $type = $parameter->getType();
+
+            if ($type instanceof ReflectionNamedType && !$type->isBuiltin()) {
+                $name = $type->getName();
+                $arguments[] = $this->has($name) ? $this->get($name) : $this->make($name);
+                continue;
+            }
+
+            if ($parameter->isDefaultValueAvailable()) {
+                $arguments[] = $parameter->getDefaultValue();
+                continue;
+            }
+
+            if ($parameter->allowsNull()) {
+                $arguments[] = null;
+                continue;
+            }
+
+            throw new RuntimeException(sprintf(
+                'Cannot resolve parameter $%s of %s::__construct().',
+                $parameter->getName(),
+                $class
+            ));
+        }
+
+        return $reflection->newInstanceArgs($arguments);
+    }
+
+    /**
+     * 请求作用域副本：保留共享对象服务，清空请求内实例缓存。
+     */
+    public function scoped(): static
+    {
+        $scoped = clone $this;
+        $scoped->instances = [];
+
+        foreach ($this->services as $id => $service) {
+            if (($service['type'] ?? null) === 'object') {
+                $scoped->instances[$id] = $service['service'];
+            }
+        }
+
+        return $scoped;
     }
 
     public function clear(string $id): void
