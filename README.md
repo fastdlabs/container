@@ -1,6 +1,6 @@
 # FastD Container
 
-![Building](https://api.travis-ci.org/JanHuang/container.svg?branch=master)
+[![CI](https://github.com/fastdlabs/container/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/fastdlabs/container/actions/workflows/ci.yml)
 [![Latest Stable Version](https://poser.pugx.org/fastd/container/v/stable)](https://packagist.org/packages/fastd/container) 
 [![Total Downloads](https://poser.pugx.org/fastd/container/downloads)](https://packagist.org/packages/fastd/container) 
 [![Latest Unstable Version](https://poser.pugx.org/fastd/container/v/unstable)](https://packagist.org/packages/fastd/container) 
