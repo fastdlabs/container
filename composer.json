@@ -1,6 +1,6 @@
 {
     "name": "fastd/container",
-    "description": "FastD Container",
+    "description": "PSR-11 dependency injection container with constructor injection for FastD.",
     "type": "library",
     "keywords": [
         "FastD",

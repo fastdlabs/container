@@ -10,9 +10,9 @@ FastD Container 是一个简单高效的PHP依赖注入容器，实现了PSR-11�
 
 ## 快速链接
 
-- [GitHub仓库](https://github.com/JanHuang/container)
+- [GitHub仓库](https://github.com/fastdlabs/container)
 - [Packagist包](https://packagist.org/packages/fastd/container)
-- [Issues反馈](https://github.com/JanHuang/container/issues)
+- [Issues反馈](https://github.com/fastdlabs/container/issues)
 
 ## 特性概览
 
@@ -27,4 +27,4 @@ FastD Container 是一个简单高效的PHP依赖注入容器，实现了PSR-11�
 
 ---
 
-**注意**: 本文档持续更新中，如发现任何问题或有改进建议，请提交 [Issue](https://github.com/JanHuang/container/issues)。
+**注意**: 本文档持续更新中，如发现任何问题或有改进建议，请提交 [Issue](https://github.com/fastdlabs/container/issues)。
